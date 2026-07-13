@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عن المعهد | معهد الملك عبدالله للبحوث والدراسات الاستشارية - موظف</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar-shared.css">
+    
+    <style>
+        html { font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 10px 30px rgba(0, 45, 91, 0.08);
+            --shadow-hover: 0 15px 40px rgba(0, 114, 188, 0.15);
+        }
+
+        body { font-family: 'Cairo', sans-serif; line-height: 1.8; color: var(--text-main); background: var(--bg-modern); background-size: 400% 400%; animation: animateBG 20s ease infinite; overflow-x: hidden; position: relative; }
+        
+        .animated-lines { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none; display: flex; justify-content: space-around; }
+        .line { width: 1px; height: 100%; background: rgba(0, 114, 188, 0.05); position: relative; }
+        .line::after { content: ''; position: absolute; top: -50%; left: -1px; width: 3px; height: 15vh; background: linear-gradient(to bottom, transparent, var(--brand-light), transparent); animation: movingLine 8s linear infinite; }
+        .line:nth-child(2)::after { animation-delay: 2s; animation-duration: 10s; }
+        .line:nth-child(3)::after { animation-delay: 4s; animation-duration: 7s; }
+        .line:nth-child(4)::after { animation-delay: 1s; animation-duration: 9s; }
+        .line:nth-child(5)::after { animation-delay: 3s; animation-duration: 6s; }
+
+        @keyframes movingLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes animateBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .navbar { position: fixed; top: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease; }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        .navbar-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 3rem; }
+        .logo { height: 60px; transition: transform 0.3s; }
+        .logo:hover { transform: scale(1.05); }
+        
+        .navbar-menu { display: flex; align-items: center; flex: 1; justify-content: space-between; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        
+        .menu-toggle { display: none; background: transparent; border: none; font-size: 1.8rem; color: var(--brand-navy); cursor: pointer; transition: color 0.3s ease; }
+        .menu-toggle:hover { color: var(--brand-blue); }
+
+        .nav-auth { display: flex; align-items: center; gap: 1.5rem; }
+
+        .user-profile-badge { display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 1rem 0.4rem 0.8rem; border: 1px solid var(--glass-border); border-radius: 50px; text-decoration: none; background: rgba(255, 255, 255, 0.5); transition: all 0.4s ease; }
+        .user-profile-badge:hover { border-color: var(--brand-light); background: var(--white); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .user-icon { font-size: 2.2rem; color: var(--brand-blue); transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-icon { color: var(--brand-navy); }
+        .user-info { display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
+        .user-name { font-weight: 800; color: var(--brand-navy); font-size: 1rem; transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-name { color: var(--brand-blue); }
+        .user-role { font-size: 0.75rem; font-weight: 800; color: white; background: var(--brand-gradient); padding: 0.1rem 0.6rem; border-radius: 12px; margin-top: 0.3rem; display: inline-block; width: fit-content; }
+        
+        .btn-logout { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 50px; font-weight: 800; font-size: 0.95rem; border: 1px solid rgba(225, 29, 72, 0.3); cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.4s ease; background: rgba(225, 29, 72, 0.05); color: #e11d48; }
+        .btn-logout:hover { background: #e11d48; color: white; transform: translateY(-2px); border-color: transparent; box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2); }
+
+        .hero { text-align: center; padding: 12rem 5% 4rem; position: relative; max-width: 1000px; margin: 0 auto; }
+        .hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; line-height: 1.4; animation: fadeInUp 0.8s ease; }
+        .hero p { font-size: 1.25rem; color: var(--text-muted); font-weight: 700; animation: fadeInUp 0.8s ease 0.2s both; }
+
+        .vision-mission-section { max-width: 1100px; margin: 0 auto 4rem; padding: 0 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; animation: fadeInUp 0.8s ease 0.3s both; }
+        .vm-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem; text-align: center; box-shadow: var(--shadow); transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .vm-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 5px; background: var(--brand-gradient); }
+        .vm-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .vm-icon { font-size: 3rem; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
+        .vm-card h3 { color: var(--brand-navy); font-size: 1.6rem; margin-bottom: 1rem; font-weight: 900; }
+        .vm-card p { color: var(--text-muted); font-weight: 700; line-height: 1.8; font-size: 1.05rem; }
+
+        .about-institute { max-width: 1100px; margin: 0 auto 5rem; padding: 0 5%; animation: fadeInUp 0.8s ease 0.4s both; }
+        .about-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 3rem; text-align: justify; box-shadow: var(--shadow); position: relative; }
+        .about-card h2 { color: var(--brand-navy); font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 900; border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .about-card p { font-size: 1.15rem; color: var(--text-muted); line-height: 2; font-weight: 700; }
+        .btn-timeline { display: inline-flex; align-items: center; gap: 0.8rem; background: var(--brand-gradient); color: white; padding: 1rem 2.5rem; border-radius: 50px; font-weight: 800; font-size: 1.1rem; transition: all 0.4s ease; border: none; cursor: pointer; margin-top: 2rem; box-shadow: var(--shadow); }
+        .btn-timeline:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        .timeline-section { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.8s ease, opacity 0.5s ease; background: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border); }
+        .timeline-section.active { max-height: 1500px; opacity: 1; padding: 5rem 0; margin-bottom: 4rem; }
+        .timeline-header { text-align: center; margin-bottom: 3rem; }
+        .timeline-header h2 { font-size: 2.2rem; font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .timeline-horizontal { display: flex; gap: 2rem; padding: 1rem 5%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+        .timeline-horizontal::-webkit-scrollbar { height: 6px; }
+        .timeline-horizontal::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        .timeline-horizontal::-webkit-scrollbar-thumb { background: var(--brand-light); border-radius: 10px; }
+        
+        .timeline-item { min-width: 280px; flex: 0 0 auto; scroll-snap-align: center; background: var(--white); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--glass-border); border-top: 4px solid var(--brand-blue); transition: all 0.3s; }
+        .timeline-item:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .timeline-date { display: inline-block; background: rgba(0, 114, 188, 0.1); color: var(--brand-blue); font-weight: 900; font-size: 1.3rem; padding: 0.3rem 1.2rem; border-radius: 50px; margin-bottom: 1rem; }
+        .timeline-text { font-weight: 800; color: var(--text-main); font-size: 1.05rem; }
+
+        .board-section { max-width: 1200px; margin: 0 auto 6rem; padding: 0 5%; text-align: center; position: relative; }
+        .board-section h2 { font-size: 2.5rem; font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 3rem; }
+        .slider-wrapper { position: relative; display: flex; align-items: center; justify-content: center; padding: 0 3rem; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 45px; height: 45px; border-radius: 50%; background: var(--white); border: 1px solid var(--glass-border); color: var(--brand-blue); font-size: 1.2rem; cursor: pointer; box-shadow: var(--shadow); transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; }
+        .slider-btn:hover { background: var(--brand-blue); color: var(--white); box-shadow: var(--shadow-hover); }
+        .slider-btn.prev { right: -10px; }
+        .slider-btn.next { left: -10px; }
+        .slider-track { display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 1rem 0; width: 100%; scrollbar-width: none; -ms-overflow-style: none; }
+        .slider-track::-webkit-scrollbar { display: none; }
+
+        .board-card { min-width: 380px; flex: 0 0 auto; scroll-snap-align: center; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); transition: all 0.4s ease; display: flex; flex-direction: row; align-items: center; text-align: right; gap: 1.5rem; }
+        .board-card:hover { transform: translateY(-5px); border-color: var(--brand-light); box-shadow: var(--shadow-hover); }
+        
+        .member-avatar { 
+            width: 80px; height: 80px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--brand-blue); font-size: 2.2rem;
+            overflow: hidden; 
+        }
+        .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .member-info { display: flex; flex-direction: column; }
+        .member-name { font-size: 1.1rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 0.3rem; }
+        .member-role { font-size: 0.85rem; font-weight: 800; color: var(--brand-blue); margin-bottom: 0.3rem; background: rgba(0, 114, 188, 0.08); padding: 0.2rem 0.6rem; border-radius: 8px; display: inline-block; width: fit-content; }
+        .member-desc { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; line-height: 1.4; }
+        .slider-dots { display: flex; justify-content: center; gap: 8px; margin-top: 2rem; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(0, 45, 91, 0.2); cursor: pointer; transition: all 0.3s ease; }
+        .dot.active { background: var(--brand-blue); transform: scale(1.3); width: 20px; border-radius: 10px; }
+
+        .footer { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); padding: 5rem 5% 2rem; position: relative; z-index: 10; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; }
+        .footer-section h3 { margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 900; color: var(--brand-navy); border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .footer-section p { color: var(--text-muted); line-height: 1.8; font-weight: 700; }
+        .footer-section a:not(.contact-link) { color: var(--brand-navy); text-decoration: none; display: block; margin-bottom: 0.8rem; font-weight: 800; transition: all 0.3s ease; }
+        .footer-section a:not(.contact-link):hover { color: var(--brand-blue); transform: translateX(-8px); }
+        .contact-link { display: flex; align-items: center; gap: 1rem; color: var(--brand-navy); text-decoration: none; background: rgba(0, 45, 91, 0.04); padding: 0.8rem 1.2rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(0, 45, 91, 0.08); transition: all 0.4s ease; font-weight: 800; }
+        .contact-link:hover { transform: translateY(-5px); border-color: var(--brand-light); box-shadow: var(--shadow); color: var(--brand-blue); background: var(--white); }
+        .contact-link i { font-size: 1.3rem; color: var(--brand-blue); }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 4rem; border-top: 1px solid rgba(0, 0, 0, 0.08); font-size: 0.95rem; color: var(--text-muted); font-weight: 800; }
+        .footer-img { height: 65px; margin-bottom: 1rem; }
+
+        /* ========================================= */
+        /* قسم حلولنا المتكاملة (تصميم مدمج ومتناسق) */
+        /* ========================================= */
+        .integrated-solutions {
+            max-width: 1100px; /* متوافق تماماً مع عرض كرت "نبذة عن المعهد" */
+            margin: 0 auto 5rem;
+            padding: 0 5%;
+            position: relative;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        
+        .integrated-solutions > h2 {
+            text-align: center;
+            font-size: 2rem; /* تم تصغيره ليتناسب مع بقية عناوين الصفحة */
+            font-weight: 900;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 3.5rem;
+        }
+
+        .solutions-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px; /* زوايا أنعم متناسقة مع الهوية الشخصية للموقع */
+            padding: 2rem 1.8rem 1.8rem; /* حشو مدروس ومدمج */
+            box-shadow: var(--shadow);
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        /* شريط العنوان الصغير الطافي فوق كل قسم */
+        .solutions-header {
+            background: var(--brand-gradient);
+            color: var(--white);
+            padding: 0.4rem 2.5rem; /* حشو صغير ومسطح */
+            border-radius: 50px; /* شكل كبسولة دائري ناعم */
+            font-size: 1.1rem; /* حجم خط متناسق */
+            font-weight: 900;
+            width: fit-content;
+            margin: 0 auto;
+            position: absolute;
+            top: -1.4rem; /* رفعه ليتوسط الخط العلوي بدقة هندسية */
+            left: 0;
+            right: 0;
+            box-shadow: 0 4px 12px rgba(0, 114, 188, 0.2);
+            border: 2px solid var(--white);
+            z-index: 5;
+        }
+
+        /* شبكة العناصر المتجاوبة (تتسع لـ 4 عناصر في السطر) */
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); /* تصغير الحد الأدنى ليرتب 4 عناصر بالسطر */
+            gap: 1rem; /* مسافات بينية مدمجة وصغيرة */
+            margin-top: 0.5rem;
+        }
+
+        /* تصميم الكبسولة المدمجة النظيفة */
+        .solution-item {
+            background: rgba(0, 114, 188, 0.03); /* خلفية خفيفة جداً ومريحة */
+            border: 1px solid rgba(0, 114, 188, 0.08);
+            border-radius: 50px;
+            padding: 0.4rem 1rem; /* تقليل الارتفاع ليصبح الحجم صغيراً ومقروءاً */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            color: var(--brand-navy);
+            font-weight: 700;
+        }
+
+        .solution-item:hover {
+            transform: translateY(-3px);
+            background: var(--white);
+            border-color: var(--brand-light);
+            box-shadow: var(--shadow-hover);
+            color: var(--brand-blue);
+        }
+
+        /* تصغير وحجم الأيقونات الدائرية */
+        .solution-item i {
+            font-size: 1rem; /* حجم أيقونة ناعم */
+            color: var(--brand-blue);
+            background: rgba(0, 114, 188, 0.06);
+            width: 32px; /* تقليص قطر الدائرة ليتناسب مع الحجم الصغير */
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .solution-item:hover i {
+            background: var(--brand-gradient);
+            color: var(--white);
+        }
+
+        .solution-item span {
+            font-size: 0.88rem; /* خط أصغر ومتناسق تماماً مع خطوط النافبار والقوائم */
+            line-height: 1.3;
+        }
+
+        /* ========================================= */
+        /* شاشة الجوال والأجهزة الذكية */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .integrated-solutions {
+                margin-bottom: 4rem;
+            }
+            .solutions-container {
+                padding: 2rem 1rem 1.2rem;
+                margin-top: 1rem;
+            }
+            .solutions-header {
+                font-size: 1rem;
+                padding: 0.3rem 2rem;
+            }
+            .solutions-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* يمنع تداخل النصوص بالجوال */
+                gap: 0.75rem;
+            }
+            .solution-item {
+                padding: 0.4rem 0.6rem;
+                border-radius: 12px; /* زوايا مربعة خفيفة بالجوال لتعطي مساحة للنص */
+            }
+            .solution-item span {
+                font-size: 0.8rem;
+            }
+        }
+
+
+
+        /* ========================================= */
+        /* قسم المشاريع الاستراتيجية (محدث لدعم الصور) */
+        /* ========================================= */
+        .strategic-projects {
+            max-width: 1200px;
+            margin: 0 auto 6rem;
+            padding: 0 5%;
+            position: relative;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .strategic-projects > h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2.5rem;
+        }
+
+        /* صندوق النص التمهيدي */
+        .intro-glass-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-right: 5px solid var(--brand-blue);
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 4rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            line-height: 2;
+        }
+
+        .intro-glass-box p {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .intro-glass-box .highlight {
+            color: var(--brand-blue);
+            text-decoration: underline;
+            text-decoration-color: var(--brand-light);
+            text-underline-offset: 5px;
+        }
+
+        /* شبكة البطاقات */
+        .projects-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        /* بطاقة المشروع */
+        .project-card-modern {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card-modern:hover {
+            transform: translateY(-10px);
+            background: var(--white);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--brand-light);
+        }
+
+        /* خط علوي يظهر عند التأشير */
+        .project-card-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--brand-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card-modern:hover::before {
+            opacity: 1;
+        }
+
+        /* منطقة العميل */
+        .client-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            width: 100%;
+        }
+
+        /* حاوية الشعار (مجهزة للصور) */
+        .client-logo-placeholder {
+            width: 75px;
+            height: 75px;
+            background: var(--white);
+            border: 1px solid rgba(0, 114, 188, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden; /* يمنع خروج الصورة عن الإطار الدائري */
+        }
+
+        .project-card-modern:hover .client-logo-placeholder {
+            border-color: var(--brand-light);
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        /* تنسيق صورة الشعار داخل الحاوية */
+        .client-logo-placeholder img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain; /* للحفاظ على أبعاد الشعار دون تشويه */
+            transition: transform 0.4s ease;
+        }
+
+        .project-card-modern:hover .client-logo-placeholder img {
+            transform: scale(1.1); /* تكبير الشعار قليلاً عند التأشير */
+        }
+
+        .client-name {
+            font-size: 0.85rem;
+            font-weight: 900;
+            color: var(--brand-light);
+            text-transform: uppercase;
+        }
+
+        /* الفاصل الأنيق */
+        .card-divider {
+            width: 40px;
+            height: 3px;
+            background: var(--brand-gradient);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .project-card-modern:hover .card-divider {
+            width: 80px;
+        }
+
+        /* عنوان المشروع */
+        .project-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--brand-navy);
+            line-height: 1.6;
+        }
+
+        /* تجاوب الجوال */
+        @media (max-width: 768px) {
+            .intro-glass-box {
+                padding: 1.5rem;
+                text-align: justify;
+            }
+            .projects-grid-modern {
+                grid-template-columns: 1fr;
+            }
+            .project-card-modern {
+                padding: 2rem 1rem;
+            }
+        }
+
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .user-profile-badge { width: 100%; justify-content: center; }
+            .btn-logout { width: 100%; }
+            .hero { padding: 12rem 5% 3rem; }
+            .slider-wrapper { padding: 0; }
+            .slider-btn { display: none; }
+            .board-card { min-width: 90%; flex-direction: column; text-align: center; }
+
+            .menu-toggle { display: block; }
+            .navbar-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 1.5rem; box-shadow: var(--shadow); border-top: 1px solid var(--glass-border); }
+            .navbar-menu.active { display: flex; }
+            .nav-links { flex-direction: column; width: 100%; gap: 1.5rem; text-align: center; }
+            .nav-auth { flex-direction: column; width: 100%; margin-top: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="animated-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="home_2.html">الرئيسية</a></li>      
+                    <li><a href="employee_2.html">الدورات التدريبية</a></li>
+                    <li><a href="word_2.html">كلمة رئيس المشروع</a></li>
+                    <li><a href="gallery_2.html">معرض الصور</a></li>
+                    <li><a href="academy_2.html">عن المعهد</a></li>
+                </ul>
+                <div class="nav-auth" id="navAuth">
+                    <a href="profile2.html" class="user-profile-badge">
+                        <i class="fas fa-user-circle user-icon"></i>
+                        <div class="user-info">
+                            <span id="profileNameLink" class="user-name">أحمد محمد</span>
+                            <span class="user-role">موظف</span>
+                        </div>
+                    </a>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>معهد الملك عبدالله للبحوث والدراسات الاستشارية</h1>
+        <p>الواجهة التعاقدية المدفوعة لكافة القطاعات لتسخير الخبرات وتقديم الدراسات والاستشارات المتقدمة.</p>
+    </header>
+
+    <section class="vision-mission-section">
+        <div class="vm-card">
+            <i class="fas fa-eye vm-icon"></i>
+            <h3>الرؤية</h3>
+            <p>الريادة والتميز في تقديم الدراسات والخدمات الاستشارية والبحثية المبتكرة محلياً وعالمياً، للإسهام في بناء اقتصاد المعرفة والتنمية المستدامة.</p>
+        </div>
+        <div class="vm-card">
+            <i class="fas fa-bullseye vm-icon"></i>
+            <h3>الرسالة</h3>
+            <p>تسخير الإمكانات المعرفية والخبرات الأكاديمية والبحثية المتميزة لجامعة الملك سعود، لتقديم حلول استشارية وتدريبية متكاملة تلبي احتياجات القطاعين العام والخاص.</p>
+        </div>
+    </section>
+
+    <section class="about-institute">
+        <div class="about-card">
+            <h2>نبذة عن المعهد</h2>
+            <p>
+                أنشئ معهد الملك عبد الله للبحوث والدراسات الاستشارية بجامعة الملك سعود بموافقة خادم الحرمين الشريفين على محضر الجلسة الخامسة لمجلس التعليم العالي المعقود بتاريخ 1/6/1417هـ الموافق 14/10/1996م، بالبرقية الكريمة رقم 7/ب/6785 التاريخ 4/11/1417هـ الموافق 13/3/1997م، والتي بموجبها يحق للمعهد تسخير كافة الامكانية والخبرات الفكرية والمعنوية بجامعة الملك سعود للقيام بدراسات و خدمات علمية و استشارية و تقديم برامج دراسية و تدريبية و خدمات إقامة المؤتمرات والندوات وورش العمل والملتقيات ورعايتها و توفير الكفاءات الأكاديمية والإدارية والفنية لجهات أخرى سعودية و غير سعودية لها فروع داخل المملكة مقابل مبالغ مالية. ليصبح المعهد الواجهة التعاقدية المدفوعة لكافة القطاعات والمؤسسات الحكومية والخاصة.
+            </p>
+            <div style="text-align: center;">
+                <button class="btn-timeline" id="btnToggleTimeline">
+                    <i class="fas fa-history"></i> اكتشف مسيرتنا
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline-section" id="timelineSection">
+        <div class="timeline-header">
+            <h2>تاريخ عريق .. مستقبل رائد</h2>
+        </div>
+        <div class="timeline-horizontal">
+            <div class="timeline-item"><span class="timeline-date">1377</span><p class="timeline-text">أنشئت جامعة الملك سعود</p></div>
+            <div class="timeline-item"><span class="timeline-date">1379</span><p class="timeline-text">إنشاء كلية العلوم</p></div>
+            <div class="timeline-item"><span class="timeline-date">1380</span><p class="timeline-text">الموافقة على نظام جامعة الملك سعود</p></div>
+            <div class="timeline-item"><span class="timeline-date">1386</span><p class="timeline-text">افتتاح كلية الزراعة</p></div>
+            <div class="timeline-item"><span class="timeline-date">1390</span><p class="timeline-text">افتتاح كلية الطب للبنين</p></div>
+            <div class="timeline-item"><span class="timeline-date">1396</span><p class="timeline-text">إنشاء مركز الدراسات الجامعية للبنات</p></div>
+            <div class="timeline-item"><span class="timeline-date">1398</span><p class="timeline-text">إنشاء كلية الدراسات العليا</p></div>
+            <div class="timeline-item"><span class="timeline-date">1411</span><p class="timeline-text">إنشاء معهد اللغات والترجمة</p></div>
+            <div class="timeline-item"><span class="timeline-date">1417</span><p class="timeline-text">إنشاء معهد للبحوث والدراسات الاستشارية بجامعة الملك سعود</p></div>
+            <div class="timeline-item"><span class="timeline-date">1422</span><p class="timeline-text">إنشاء كلية المجتمع في الرياض</p></div>
+            <div class="timeline-item"><span class="timeline-date">1443</span><p class="timeline-text">إنشاء كلية الفنون</p></div>
+            <div class="timeline-item"><span class="timeline-date">1444</span><p class="timeline-text">النظام الأساس لجامعة الملك سعود (مؤسسة أكاديمية مستقلة غير هادفة للربح)</p></div>
+        </div>
+    </section>
+
+    <section class="board-section">
+        <h2>مجلس إدارة المعهد</h2>
+        
+        <div class="slider-wrapper">
+            <button class="slider-btn prev" id="prevBtn"><i class="fas fa-chevron-right"></i></button>
+            
+            <div class="slider-track" id="boardSlider">
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A1.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">أ.د. علي بن محمد مسملي</h3><span class="member-role">رئيساً</span><p class="member-desc">رئيس الجامعة المكلف</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A3.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. عبدالله بن أحمد الثابت</h3><span class="member-role">نائب الرئيس</span><p class="member-desc">عميد المعهد</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A2.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">أ.د. يزيد بن عبدالملك آل الشيخ</h3><span class="member-role">عضواً</span><p class="member-desc">كلية العلوم الطبية التطبيقية</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A4.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">أ.د. أحمد بن محمد العامري</h3><span class="member-role">عضواً</span><p class="member-desc">وكيل المعهد</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A5.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">أ.د. صالح بن محمد الواصل</h3><span class="member-role">عضواً</span><p class="member-desc">عميد البحث العلمي</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A6.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">أ.د. عبدالله بن عبدالرحمن التويجري</h3><span class="member-role">عضواً</span></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A7.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. عبدالعزيز بن أحمد التويجري</h3><span class="member-role">عضواً</span><p class="member-desc">كلية الحقوق والعلوم السياسية</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A8.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. صالح بن ابراهيم الفريح</h3><span class="member-role">عضواً</span><p class="member-desc"> </p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A9.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. أحمد الخبتي</h3><span class="member-role">عضواً</span><p class="member-desc">المستشار القانوني العام للجامعة</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A10.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. ريما بنت حسن بن سعيد</h3><span class="member-role">عضواً</span><p class="member-desc">عميد كلية إدارة الاعمال</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A10.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. حصة بنت صالح الجربوع</h3><span class="member-role">عضواً</span><p class="member-desc">كلية إدارة الاعمال</p></div></div>
+                <div class="board-card"><div class="member-avatar"><img src="img-maher/A10.jpg" alt="صورة العضو"></div><div class="member-info"><h3 class="member-name">د. حصة بنت عبدالله السلامة</h3><span class="member-role">عضواً</span><p class="member-desc">كلية علوم الحاسب والمعلومات</p></div></div>
+            </div>
+            
+            <button class="slider-btn next" id="nextBtn"><i class="fas fa-chevron-left"></i></button>
+        </div>
+        <div class="slider-dots" id="sliderDots"></div>
+    </section>
+
+
+    <section class="integrated-solutions">
+        <h2>حلولنا المتكاملة</h2>
+
+        <div class="solutions-container">
+            <div class="solutions-header">الحلول</div>
+            <div class="solutions-grid">
+                <div class="solution-item">
+                    <i class="fas fa-user-tie"></i>
+                    <span>الدراسات الاستشارية</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-microscope"></i>
+                    <span>الدراسات البحثية</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>التعليم الأكاديمي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>النقل المعرفي (تدريب، ورش عمل)</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-book-reader"></i>
+                    <span>الخدمات الأكاديمية</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-cogs"></i>
+                    <span>الخدمات الفنية والتشغيلية</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>التعليم الطبي (الزمالة)</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span>التعليم التنفيذي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-users"></i>
+                    <span>مركز التدريب وخدمة المجتمع</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-user-check"></i>
+                    <span>المستشارين المتخصصين</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>التقنية والهندسية</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>الفعاليات</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="solutions-container">
+            <div class="solutions-header">الالقطاعات</div>
+            <div class="solutions-grid">
+                <div class="solution-item">
+                    <i class="fas fa-school"></i>
+                    <span>القطاع التعليمي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>القطاع الأمني</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-city"></i>
+                    <span>القطاع الحضري</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>القطاع الصحي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-seedling"></i>
+                    <span>القطاع الزراعي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-industry"></i>
+                    <span>القطاع الصناعي</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>القطاع التقني</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-smile"></i>
+                    <span>قطاع جودة الحياة</span>
+                </div>
+                <div class="solution-item">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>القطاع الخيري</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+     <section class="strategic-projects">
+        <h2>المشاريع الاستراتيجية</h2>
+
+        <div class="intro-glass-box">
+            <p>
+                مع تأسيس الهيئات والمراكز المتخصصة بتطوير المناطق والمدن، كانت جامعة الملك سعود من أوائل الجهات الأكاديمية الداعمة، حيث بادر معهد الملك عبدالله للبحوث والدراسات الاستشارية بتنفيذ مشاريع استراتيجية لهذه الهيئات، مما عزز دوره كشريك رئيسي في التنمية الوطنية.
+            </p>
+        </div>
+
+        <div class="projects-grid-modern">
+            
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m1.png" alt="شعار هيئة تطوير منطقة عسير">
+                    </div>
+                    <span class="client-name">هيئة تطوير منطقة عسير</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">إعداد الدراسات التطويرية والهندسية</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m2.png" alt="شعار هيئة تطوير منطقة مكة المكرمة">
+                    </div>
+                    <span class="client-name">هيئة تطوير منطقة مكة المكرمة</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">دراسة حصد وخزن مياه الامطار والسيول في وادي فاطمة ووادي الليث</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m3.png" alt="شعار هيئة تطوير المنطقة الشرقية">
+                    </div>
+                    <span class="client-name">هيئة تطوير المنطقة الشرقية</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">دورة تطوير الأجهزة الحكومية</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m4.png" alt="شعار الهيئة الملكية لمحافظة العلا">
+                    </div>
+                    <span class="client-name">الهيئة الملكية لمحافظة العلا</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">Investigate Acacia Trees Deiback possible sulutions</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m5.png" alt="شعار هيئة تطوير بوابة الدرعية">
+                    </div>
+                    <span class="client-name">هيئة تطوير بوابة الدرعية</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">تقديم خدمات التحقق من آثار وادي حنيفة</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m6.png" alt="شعار هيئة التراث">
+                    </div>
+                    <span class="client-name">هيئة التراث</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">تنفيذ الدراسات الأثرية في الفاو</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m7.png" alt="شعار شركة نيوم">
+                    </div>
+                    <span class="client-name">شركة نيوم</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">دراسة سلوك المستهلك في السعودية لشرب المياه</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m8.png" alt="شعار هيئة تطوير محمية الإمام تركي">
+                    </div>
+                    <span class="client-name">هيئة تطوير محمية الإمام تركي</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">تقديم خدمات المسح الأثري الشاملة</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m9.png" alt="شعار أمانة منطقة الرياض">
+                    </div>
+                    <span class="client-name">أمانة منطقة الرياض</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">حصر وتوثيق مباني النصف الثاني من القرن العشرين</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m10.png" alt="شعار الشركة السعودية للكهرباء">
+                    </div>
+                    <span class="client-name">الشركة السعودية للكهرباء</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">انتاج الكهرباء بتركيز اشعة الشمس على الرمال</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m11.png" alt="شعار الهيئة الملكية لمحافظة العلا">
+                    </div>
+                    <span class="client-name">الهيئة الملكية لمحافظة العلا</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">تأثير البيئة المحيطة على أشجار الأكاسيا</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m12.png" alt="شعار أرامكو">
+                    </div>
+                    <span class="client-name">أرامكو</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">تطوير مبادل حراري لتطبيقات الطاقة الشمسية</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m13.png" alt="شعار وزارة البيئة والمياه والزراعة">
+                    </div>
+                    <span class="client-name">وزارة البيئة والمياه والزراعة</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">حصر الآفات والأمراض الزراعية</h3>
+            </div>
+
+            <div class="project-card-modern">
+                <div class="client-area">
+                    <div class="client-logo-placeholder">
+                        <img src="img-maher/m14.png" alt="شعار المركز الوطني لتنمية الحياة الفطرية">
+                    </div>
+                    <span class="client-name">المركز الوطني لتنمية الحياة الفطرية</span>
+                </div>
+                <div class="card-divider"></div>
+                <h3 class="project-title">إعداد خطة حماية واستعادة الأنواع المتوطنة المهددة بالانقراض</h3>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img class="footer-img" src="logo_maher.png" alt="">
+                <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                    <a href="home_2.html">الرئيسية</a>   
+                    <a href="employee_2.html">الدورات التدريبية</a>
+                    <a href="word_2.html">كلمة رئيس المشروع</a>
+                    <a href="gallery_2.html">معرض الصور</a>
+                    <a href="academy_2.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <a href="tel:0539600080" class="contact-link">
+                    <i class="fas fa-phone"></i> 0539600080
+                </a>
+                <a href="mailto:skillsproject23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> skillsproject23@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <script>
+        function updateProfileUI() {
+            const data = JSON.parse(localStorage.getItem('userProfileData') || localStorage.getItem('profileData') || '{}');
+            if(data.name || data.Name) {
+                document.getElementById('profileNameLink').textContent = data.Name || data.name;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggleBtn = document.getElementById('menuToggle');
+            const navbarMenuDiv = document.getElementById('navbarMenu');
+            
+            if(menuToggleBtn && navbarMenuDiv) {
+                menuToggleBtn.addEventListener('click', function() {
+                    navbarMenuDiv.classList.toggle('active');
+                    const isExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
+                    menuToggleBtn.setAttribute('aria-expanded', !isExpanded);
+                });
+            }
+
+            updateProfileUI();
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('profileData');
+                localStorage.removeItem('userProfileData');
+                window.location.href = 'index.html';
+            });
+
+            window.addEventListener('scroll', () => {
+                document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            const btnToggleTimeline = document.getElementById('btnToggleTimeline');
+            const timelineSection = document.getElementById('timelineSection');
+
+            btnToggleTimeline.addEventListener('click', () => {
+                timelineSection.classList.toggle('active');
+                if(timelineSection.classList.contains('active')) {
+                    btnToggleTimeline.innerHTML = '<i class="fas fa-times"></i> إغلاق المسيرة';
+                    setTimeout(() => { timelineSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+                } else {
+                    btnToggleTimeline.innerHTML = '<i class="fas fa-history"></i> اكتشف مسيرتنا';
+                }
+            });
+
+            const track = document.getElementById('boardSlider');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('sliderDots');
+            const cards = document.querySelectorAll('.board-card');
+
+            cards.forEach((card, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if(index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll('.dot');
+            const updateDotsOnScroll = () => {
+                let currentIndex = 0;
+                let minDistance = Infinity;
+                const trackCenter = track.getBoundingClientRect().left + (track.offsetWidth / 2);
+
+                cards.forEach((card, index) => {
+                    const cardCenter = card.getBoundingClientRect().left + (card.offsetWidth / 2);
+                    const distance = Math.abs(trackCenter - cardCenter);
+                    if(distance < minDistance) { minDistance = distance; currentIndex = index; }
+                });
+
+                dots.forEach(dot => dot.classList.remove('active'));
+                if(dots[currentIndex]) dots[currentIndex].classList.add('active');
+            };
+
+            track.addEventListener('scroll', updateDotsOnScroll);
+            prevBtn.addEventListener('click', () => { track.scrollBy({ left: track.offsetWidth / 2, behavior: 'smooth' }); });
+            nextBtn.addEventListener('click', () => { track.scrollBy({ left: -track.offsetWidth / 2, behavior: 'smooth' }); });
+        });
+    </script>
+    <script src="navbar-shared.js"></script>
+</body>
+</html>

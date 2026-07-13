@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض الصور - برنامج مهارات</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ========================================= */
+        /* 1. الإعدادات العامة وألوان الهوية */
+        /* ========================================= */
+        html { font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 12px 35px rgba(0, 45, 91, 0.06);
+            --shadow-hover: 0 20px 45px rgba(0, 114, 188, 0.12);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-modern);
+            background-size: 400% 400%;
+            animation: animateBG 20s ease infinite; 
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .animated-lines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; display: flex; justify-content: space-around;
+        }
+        .line { width: 1px; height: 100%; background: rgba(0, 114, 188, 0.05); position: relative; }
+        .line::after {
+            content: ''; position: absolute; top: -50%; left: -1px; width: 3px; height: 15vh;
+            background: linear-gradient(to bottom, transparent, var(--brand-light), transparent);
+            animation: movingLine 8s linear infinite;
+        }
+        @keyframes movingLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes animateBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* ========================================= */
+        /* 2. الشريط العلوي (تم التعديل لمحاذاة اليمين) */
+        /* ========================================= */
+        .navbar {
+            position: fixed; top: 0; width: 100%; 
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; padding: 1rem 5%; border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        
+        .navbar-inner { 
+            display: flex; 
+            justify-content: flex-start;
+            align-items: center; 
+            width: 100%; 
+        }
+        
+        .logo { height: 60px; transition: transform 0.3s; margin-left: 3rem; }
+        .logo:hover { transform: scale(1.05); }
+        
+        .navbar-menu { 
+            display: flex; 
+            flex-grow: 1; 
+            justify-content: space-between;
+            align-items: center; 
+        }
+        
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        .login-buttons { display: flex; gap: 0.75rem; align-items: center; }
+        .login-btn, .register-btn { padding: 0.6rem 1.5rem; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.4s ease; }
+        .login-btn { background: rgba(0, 114, 188, 0.08); color: var(--brand-blue); border: 1px solid rgba(0, 114, 188, 0.3); }
+        .register-btn { background: var(--brand-gradient); color: white; border: 1px solid transparent; box-shadow: var(--shadow); }
+        .login-btn:hover { background: var(--brand-blue); color: white; transform: translateY(-2px); border-color: transparent; }
+        .register-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+        .menu-toggle { display: none; background: none; border: none; font-size: 1.8rem; color: var(--brand-navy); cursor: pointer; }
+
+        @media (max-width: 1024px) {
+            .navbar-inner { justify-content: space-between; }
+            .logo { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .navbar-menu {
+                position: absolute; top: 100%; left: 0; right: 0; background: var(--white);
+                flex-direction: column; padding: 2rem; box-shadow: var(--shadow);
+                display: none; border-top: 1px solid var(--glass-border);
+            }
+            .navbar-menu.active { display: flex; }
+            .nav-links { flex-direction: column; width: 100%; text-align: center; margin-bottom: 1rem; }
+            .login-buttons { flex-direction: column; width: 100%; }
+            .login-btn, .register-btn { justify-content: center; width: 100%; }
+        }
+
+        /* ========================================= */
+        /* 3. تنسيقات معرض الصور (تم تحديثها لاحترافية عالية) */
+        /* ========================================= */
+        .page-header { text-align: center; padding: 10rem 5% 3rem; }
+        .page-header h1 { font-size: 2.8rem; font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
+        .page-header p { font-size: 1.2rem; color: var(--text-muted); font-weight: 700; }
+
+        .gallery-container {
+            max-width: 1300px; /* تم التوسيع قليلاً لعرض أفضل */
+            margin: 0 auto 5rem;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* حجم صور عصري ومناسب */
+            gap: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 20px; /* زوايا دائرية حديثة */
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 45, 91, 0.05); /* ظل ناعم جداً */
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* انتقال سلس واحترافي */
+            aspect-ratio: 4/3;
+            background-color: var(--white);
+            transform: translateY(0);
+        }
+
+        /* إضافة إطار داخلي شبه شفاف لمسة زجاجية */
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .gallery-item:hover { 
+            transform: translateY(-10px) scale(1.02); /* رفع وتكبير الإطار بالكامل بلمسة خفيفة */
+            box-shadow: 0 20px 45px rgba(0, 114, 188, 0.2); /* ظل أعمق عند التمرير */
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: transform 0.8s ease; /* حركة بطيئة وأنيقة للصورة */
+            display: block;
+        }
+
+        .gallery-item:hover img { 
+            transform: scale(1.1); /* تكبير الصورة داخل الإطار */
+        }
+        
+        .gallery-overlay {
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* استخدام تدرج لوني يعطي طابعاً احترافياً بدلاً من اللون الثابت */
+            background: linear-gradient(to top, rgba(0, 45, 91, 0.85) 0%, rgba(0, 45, 91, 0.2) 50%, transparent 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            opacity: 0; 
+            transition: all 0.4s ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover .gallery-overlay { 
+            opacity: 1; 
+        }
+
+        .gallery-overlay i { 
+            color: white; 
+            font-size: 2.5rem; 
+            transform: scale(0.5) translateY(20px); 
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* تأثير ارتداد لطيف للأيقونة */
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .gallery-item:hover .gallery-overlay i { 
+            transform: scale(1) translateY(0); 
+            opacity: 1;
+        }
+
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 15, 30, 0.95); z-index: 2000; display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+            backdrop-filter: blur(10px); /* زيادة ضبابية الخلفية */
+        }
+        #lightbox img { 
+            max-width: 90%; max-height: 85vh; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5); 
+            /* إزالة الإطار الأبيض من العرض المكبر لجعله سينمائياً أكثر */
+        }
+        .close-lightbox {
+            position: absolute; top: 30px; right: 40px; color: rgba(255,255,255,0.7);
+            font-size: 3rem; cursor: pointer; transition: all 0.3s ease;
+        }
+        .close-lightbox:hover { color: var(--brand-light); transform: scale(1.1); }
+
+        /* ========================================= */
+        /* 4. الفوتر */
+        /* ========================================= */
+        .footer {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border); padding: 5rem 5% 2rem; position: relative; z-index: 10; margin-top: auto;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; }
+        .footer-section h3 { margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 900; color: var(--brand-navy); border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .footer-section p { color: var(--text-muted); line-height: 1.8; font-weight: 700; }
+        .footer-section a:not(.contact-link) { color: var(--brand-navy); text-decoration: none; display: block; margin-bottom: 0.8rem; font-weight: 800; transition: all 0.3s ease; }
+        .footer-section a:not(.contact-link):hover { color: var(--brand-blue); transform: translateX(-8px); }
+        .contact-link {
+            display: flex; align-items: center; gap: 1rem; color: var(--brand-navy); text-decoration: none;
+            background: rgba(0, 45, 91, 0.04); padding: 0.8rem 1.2rem; border-radius: 12px; margin-bottom: 1rem;
+            border: 1px solid rgba(0, 45, 91, 0.08); transition: all 0.4s ease; font-weight: 800;
+        }
+        .footer-img { height: 65px; margin-bottom: 1rem; }
+        .contact-link:hover { transform: translateY(-5px); border-color: var(--brand-light); box-shadow: var(--shadow); color: var(--brand-blue); background: var(--white); }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 4rem; border-top: 1px solid rgba(0, 0, 0, 0.08); font-size: 0.95rem; color: var(--text-muted); font-weight: 800; }
+
+        @media (max-width: 768px) {
+            .footer-content { grid-template-columns: 1fr; text-align: right; gap: 2rem; }
+            .page-header h1 { font-size: 2.2rem; }
+            .gallery-container { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="animated-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="employee.html">الدورات التدريبية</a></li>
+                    <li><a href="word.html">كلمة رئيس المشروع</a></li>
+                    <li><a href="gallery.html">معرض الصور</a></li>
+                    <li><a href="academy.html">عن المعهد</a></li>   
+                </ul>
+                <div class="nav-auth">
+                    <div class="login-buttons">
+                        <a href="rede.html#login" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i><span>تسجيل دخول</span>
+                        </a>
+                        <a href="rede.html" class="register-btn">
+                            <i class="fas fa-user-plus"></i><span>تسجيل</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>معرض الصور</h1>
+        <p>اكتشف أبرز وأجمل اللحظات والذكرايات لأنشطة وفعاليات مشروع مهارات</p>
+    </header>
+
+    <section class="gallery-container" id="galleryContainer">
+        </section>
+
+    <div id="lightbox">
+        <span class="close-lightbox" id="closeLightbox">&times;</span>
+        <img id="lightboxImg" src="" alt="صورة مكبرة">
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img class="footer-img" src="logo_maher.png" alt="شعار مهارات">
+                <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <a href="index.html">الرئيسية</a>
+                <a href="employee.html">الدورات التدريبية</a>
+                <a href="word.html">كلمة رئيس المشروع</a>
+                <a href="gallery.html">معرض الصور</a>
+                <a href="academy.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <a href="tel:0539600080" class="contact-link">
+                    <i class="fas fa-phone"></i> 0539600080
+                </a>
+                <a href="mailto:skillsproject23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> skillsproject23@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // توليد الصور الخاصة بك
+            const galleryContainer = document.getElementById('galleryContainer');
+            // إجمالي الصور 36
+            const totalImages = 36;
+            
+            for (let i = 1; i <= 36; i++) {
+
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+
+    const imagePath = `imges/${i}.png`;
+
+    item.innerHTML = `
+        <img src="${imagePath}" alt="صورة ${i}" loading="lazy">
+        <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+        </div>
+    `;
+
+    item.addEventListener('click', () => {
+        openLightbox(imagePath);
+    });
+
+    galleryContainer.appendChild(item);
+}
+
+            // برمجة نافذة العرض المكبر
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            const closeBtn = document.getElementById('closeLightbox');
+
+            function openLightbox(src) {
+                lightboxImg.src = src;
+                lightbox.style.display = 'flex';
+                // منع التمرير في الخلفية عند فتح الصورة
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightboxFunc() {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            // إغلاق النافذة عند الضغط على زر X
+            closeBtn.addEventListener('click', closeLightboxFunc);
+
+            // إغلاق النافذة عند الضغط في أي مكان خارج الصورة
+            lightbox.addEventListener('click', (e) => {
+                if(e.target === lightbox) {
+                    closeLightboxFunc();
+                }
+            });
+
+            // تغيير شكل الشريط العلوي عند النزول بالصفحة
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (nav) {
+                    nav.classList.toggle('scrolled', window.scrollY > 50);
+                }
+            });
+
+            // برمجة زر القائمة للجوال
+            const menuToggle = document.getElementById('menuToggle');
+            const navbarMenu = document.getElementById('navbarMenu');
+            
+            if (menuToggle && navbarMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navbarMenu.classList.toggle('active');
+                    const icon = menuToggle.querySelector('i');
+                    if(navbarMenu.classList.contains('active')){
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

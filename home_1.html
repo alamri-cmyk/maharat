@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج مهارات | الباحث عن عمل</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar-shared.css">
+    
+    <style>
+        /* ========================================= */
+        /* تصغير الحجم العام لجميع العناصر (تعديل جديد) */
+        /* ========================================= */
+        html {
+            font-size: 14px; /* يقلل حجم النصوص والمسافات المبنية على وحدة rem بنسبة متناسقة */
+        }
+
+        /* ========================================= */
+        /* 1. الإعدادات العامة وألوان الهوية */
+        /* ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 12px 35px rgba(0, 45, 91, 0.06);
+            --shadow-hover: 0 20px 45px rgba(0, 114, 188, 0.12);
+        }
+
+        /* ========================================= */
+        /* 2. الخلفية والخطوط المتحركة العصرية */
+        /* ========================================= */
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-modern);
+            background-size: 400% 400%;
+            animation: animateBG 20s ease infinite; 
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .animated-lines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; display: flex; justify-content: space-around;
+        }
+        .line { width: 1px; height: 100%; background: rgba(0, 114, 188, 0.05); position: relative; }
+        .line::after {
+            content: ''; position: absolute; top: -50%; left: -1px; width: 3px; height: 15vh;
+            background: linear-gradient(to bottom, transparent, var(--brand-light), transparent);
+            animation: movingLine 8s linear infinite;
+        }
+        .line:nth-child(2)::after { animation-delay: 2s; animation-duration: 10s; }
+        .line:nth-child(3)::after { animation-delay: 4s; animation-duration: 7s; }
+        .line:nth-child(4)::after { animation-delay: 1s; animation-duration: 9s; }
+        .line:nth-child(5)::after { animation-delay: 3s; animation-duration: 6s; }
+
+        @keyframes movingLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes animateBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ========================================= */
+        /* 3. الشريط العلوي (النافبار) */
+        /* ========================================= */
+        .navbar {
+            position: fixed; top: 0; width: 100%; left: 0; right: 0;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        
+        /* 💡 إزالة الفراغات وإجبار الشريط على التمدد الكامل */
+        .navbar-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; gap: 3rem;
+        }
+
+        .logo { height: 60px; transition: transform 0.3s; z-index: 1001; }
+        .logo:hover { transform: scale(1.05); }
+        
+        /* 💡 إعدادات القائمة وتوزيع الروابط */
+        .navbar-menu {
+            display: flex; align-items: center; flex: 1; justify-content: space-between; 
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* 💡 إعدادات زر القائمة (مخفي في الشاشات الكبيرة) */
+        .menu-toggle {
+            display: none; background: transparent; border: none; font-size: 1.8rem; 
+            color: var(--brand-navy); cursor: pointer; transition: color 0.3s ease;
+        }
+        .menu-toggle:hover { color: var(--brand-blue); }
+
+        .nav-auth { display: flex; align-items: center; gap: 1.5rem; }
+
+        /* منطقة ملف المستخدم */
+        .nav-auth { display: flex; align-items: center; gap: 1rem; }
+        .user-profile-badge { display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 1rem 0.4rem 0.8rem; border: 1px solid var(--glass-border); border-radius: 50px; text-decoration: none; background: rgba(255, 255, 255, 0.5); transition: all 0.4s ease; }
+        .user-profile-badge:hover { border-color: var(--brand-light); background: var(--white); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .user-icon { font-size: 2.2rem; color: var(--brand-blue); transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-icon { color: var(--brand-navy); }
+        .user-info { display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
+        .user-name { font-weight: 800; color: var(--brand-navy); font-size: 1rem; transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-name { color: var(--brand-blue); }
+        .user-role { font-size: 0.75rem; font-weight: 800; color: white; background: var(--brand-gradient); padding: 0.1rem 0.6rem; border-radius: 12px; margin-top: 0.3rem; display: inline-block; width: fit-content; }
+        
+        .btn-logout { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 50px; font-weight: 800; font-size: 0.95rem; border: 1px solid rgba(225, 29, 72, 0.3); cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.4s ease; background: rgba(225, 29, 72, 0.05); color: #e11d48; }
+        .btn-logout:hover { background: #e11d48; color: white; transform: translateY(-2px); border-color: transparent; box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2); }
+
+        /* ========================================= */
+        /* 4. واجهة الصفحة (Hero) */
+        /* ========================================= */
+        .hero { text-align: center; padding: 13rem 5% 4rem; position: relative; max-width: 1000px; margin: 0 auto; }
+        .hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; line-height: 1.4; animation: fadeInUp 0.8s ease; letter-spacing: -0.5px; }
+        .hero p { font-size: 1.3rem; color: var(--text-muted); font-weight: 700; max-width: 800px; margin: 0 auto 2.5rem; animation: fadeInUp 0.8s ease 0.2s both; line-height: 1.9; }
+        
+        .btn-primary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem;
+            background: var(--brand-gradient); color: white; padding: 1.1rem 3.5rem; border-radius: 50px;
+            text-decoration: none; font-weight: 900; font-size: 1.2rem; border: none; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); animation: fadeInUp 0.8s ease 0.4s both; box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-hover); }
+
+        /* ========================================= */
+        /* 5. تعريف وأهداف وشروط برنامج مهارات */
+        /* ========================================= */
+        .mahara-info-section { max-width: 1200px; margin: 0 auto 6rem; padding: 0 5%; animation: fadeInUp 0.8s ease 0.5s both; }
+        
+        .definition-card {
+            background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 3.5rem 3rem; text-align: right; box-shadow: var(--shadow);
+            position: relative; overflow: hidden; margin-bottom: 4rem;
+        }
+        .definition-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--brand-gradient); }
+        .definition-card::after { content: '\f19d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: -10px; left: 20px; font-size: 10rem; color: rgba(0, 114, 188, 0.03); transform: rotate(-15deg); pointer-events: none; }
+        .definition-card h2 { color: var(--brand-navy); font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 900; }
+        .definition-card p { font-size: 1.18rem; color: var(--text-muted); line-height: 2; font-weight: 700; }
+
+        /* ستايل شروط وأحكام البرنامج الجديد */
+        .terms-section {
+            background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 3.5rem 3rem; text-align: right; box-shadow: var(--shadow);
+            margin-bottom: 4rem;
+        }
+        .terms-section h2 { color: var(--brand-blue); font-size: 2.2rem; margin-bottom: 2.5rem; font-weight: 900; text-align: center; }
+        .terms-list { display: flex; flex-direction: column; gap: 1.2rem; }
+        .term-item {
+            display: flex; align-items: center; gap: 1.2rem; background: rgba(255, 255, 255, 0.8);
+            padding: 1.2rem 1.5rem; border-radius: 12px; border: 1px solid rgba(0, 114, 188, 0.05);
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        .term-item:hover { transform: translateY(-3px); border-color: var(--brand-light); box-shadow: var(--shadow); background: var(--white); }
+        .term-icon {
+            color: var(--brand-blue); background: rgba(76, 179, 248, 0.15); width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0;
+        }
+        .term-text { font-size: 1.15rem; font-weight: 700; color: var(--brand-navy); }
+
+        .goals-header { text-align: center; margin-bottom: 3.5rem; }
+        .goals-header h2 { font-size: 2.4rem; font-weight: 900; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .goals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; }
+        .goal-card {
+            background: rgba(255, 255, 255, 0.9); border: 1px solid var(--glass-border); border-radius: 24px;
+            padding: 3rem 2rem; text-align: center; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: var(--shadow);
+        }
+        .goal-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); border-color: var(--brand-light); }
+        .goal-icon {
+            width: 75px; height: 75px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 114, 188, 0.07); color: var(--brand-blue); border-radius: 50%; font-size: 2.2rem; transition: all 0.4s ease;
+        }
+        .goal-card:hover .goal-icon { background: var(--brand-gradient); color: var(--white); transform: scale(1.1) rotate(5deg); }
+        .goal-card p { font-size: 1.15rem; color: var(--brand-navy); font-weight: 800; line-height: 1.7; }
+
+        /* ========================================= */
+        /* 6. مميزات المنصة */
+        /* ========================================= */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; padding: 0 5% 5rem; max-width: 1200px; margin: 0 auto; justify-content: center; }
+        .feature-card { background: var(--glass-bg); backdrop-filter: blur(15px); padding: 2.5rem 2rem; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); transition: all 0.4s ease; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--brand-gradient); }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--brand-light); }
+        .feature-card i { font-size: 3rem; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; display: inline-block; }
+        .feature-card h3 { margin-bottom: 1rem; font-weight: 900; color: var(--brand-navy); font-size: 1.35rem; }
+        .feature-card p { color: var(--text-muted); font-weight: 700; font-size: 0.98rem; }
+
+        /* ========================================= */
+        /* 7. شركاء النجاح */
+        /* ========================================= */
+        .partners-section { background: transparent; padding: 5rem 0; text-align: center; overflow: hidden; position: relative; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+        .partners-title { font-size: 2.4rem; font-weight: 900; margin-bottom: 3rem; background: var(--text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .partners-slider { display: flex; overflow: hidden; position: relative; user-select: none; padding: 1.5rem 0; width: 100%; }
+        .partners-slider::before, .partners-slider::after { content: ""; height: 100%; position: absolute; width: 120px; z-index: 2; pointer-events: none; }
+        .partners-slider::before { left: 0; top: 0; background: linear-gradient(to right, rgba(240,248,255,1), rgba(240,248,255,0)); }
+        .partners-slider::after { right: 0; top: 0; background: linear-gradient(to left, rgba(240,248,255,1), rgba(240,248,255,0)); }
+        
+        .partners-track { display: flex; width: max-content; }
+        .partner-group { display: flex; align-items: center; gap: 3.5rem; padding: 0 1.7rem; flex-shrink: 0; }
+        
+        .partner-logo { width: 125px; height: 70px; object-fit: contain; opacity: 0.9; transition: all 0.4s ease; flex-shrink: 0; }
+        .partner-logo:hover { opacity: 1; transform: scale(1.12); filter: drop-shadow(0px 8px 15px rgba(0, 114, 188, 0.15)); }
+        
+        .track-right { animation: scrollRight 45s linear infinite; }
+        .track-left { animation: scrollLeft 45s linear infinite; }
+        .partners-slider:hover .partners-track { animation-play-state: paused; }
+
+        @keyframes scrollRight { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+        @keyframes scrollLeft { 0% { transform: translateX(50%); } 100% { transform: translateX(0); } }
+
+        /* ========================================= */
+        /* 8. الفوتر المضيء والمتناسق */
+        /* ========================================= */
+        .footer {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border); padding: 5rem 5% 2rem; position: relative; z-index: 10;
+        }
+        .footer-img { height: 65px; margin-bottom: 1.5rem; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; }
+        .footer-section h3 { margin-bottom: 1rem; font-size: 1rem; font-weight: 900; color: var(--brand-navy); border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .footer-section p { color: var(--text-muted); line-height: 1.8; font-weight: 700; }
+        .footer-section a:not(.contact-link) { color: var(--brand-navy); text-decoration: none; display: block; margin-bottom: 0.8rem; font-weight: 800; transition: all 0.3s ease; }
+        .footer-section a:not(.contact-link):hover { color: var(--brand-blue); transform: translateX(-8px); }
+        .contact-link {
+            display: flex; align-items: center; gap: 1rem; color: var(--brand-navy); text-decoration: none;
+            background: rgba(0, 45, 91, 0.04); padding: 0.8rem 1.2rem; border-radius: 12px; margin-bottom: 1rem;
+            border: 1px solid rgba(0, 45, 91, 0.08); transition: all 0.4s ease; font-weight: 800;
+        }
+      
+        .contact-link:hover { transform: translateY(-5px); border-color: var(--brand-light); box-shadow: var(--shadow); color: var(--brand-blue); background: var(--white); }
+        .contact-link i { font-size: 1.3rem; color: var(--brand-blue); }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 4rem; border-top: 1px solid rgba(0, 0, 0, 0.08); font-size: 0.95rem; color: var(--text-muted); font-weight: 800; }
+
+        /* ========================================= */
+        /* التجاوب مع الجوال والآيباد (Media Queries) */
+        /* ========================================= */
+        @media (max-width: 1024px) {
+            /* 💡 إصلاح القائمة المنسدلة في وضع الجوال */
+            .menu-toggle { display: block; }
+            .navbar-menu {
+                position: absolute; top: 100%; right: 0; width: 100%; background: var(--white);
+                flex-direction: column; padding: 2rem 5%; box-shadow: var(--shadow);
+                border-top: 1px solid var(--glass-border);
+                opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease;
+            }
+            .navbar-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+            .nav-links { flex-direction: column; width: 100%; gap: 1.5rem; margin-bottom: 2rem; margin-right: 0; text-align: center; }
+            .nav-auth { width: 100%; flex-direction: column; justify-content: center; gap: 1rem; }
+
+            .hero { padding: 12rem 5% 4rem; }
+            .hero h1 { font-size: 3rem; }
+            .goals-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .user-profile-badge { width: 100%; justify-content: center; }
+            .btn-logout { width: 100%; }
+            
+            .hero { padding: 7.5rem 5% 3rem; }
+            .hero h1 { font-size: 2.4rem; }
+            .hero p { font-size: 1.15rem; }
+            
+            .definition-card, .terms-section { padding: 2.5rem 1.5rem; }
+            .definition-card h2, .terms-section h2 { font-size: 1.75rem; }
+            
+            .goals-grid, .features-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; text-align: right; gap: 2rem; }
+            
+            .partners-slider::before, .partners-slider::after { width: 50px; }
+            .partner-group { gap: 2rem; }
+            .partner-logo { width: 100px; height: 55px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="animated-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="home_1.html">الرئيسية</a></li>
+                    <li><a href="Researcher.html">الدورات التدريبية</a></li>
+                    <li><a href="word_1.html">كلمة رئيس المشروع</a></li>
+                    <li><a href="gallery_1.html">معرض الصور</a></li>
+                    <li><a href="academy_1.html">عن المعهد</a></li>
+                </ul>
+                <div class="nav-auth" id="navAuth">
+                    <a href="profile1.html" class="user-profile-badge">
+                        <i class="fas fa-user-circle user-icon"></i>
+                        <div class="user-info">
+                            <span id="profileNameLink" class="user-name">أحمد محمد</span>
+                            <span class="user-role">باحث عن عمل</span>
+                        </div>
+                    </a>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>برنامج مهارات</h1>
+        <p>
+            بوابتك المعتمدة والذكية لتطوير المهارات المهنية والوصول إلى القمة في مسيرتك الوظيفية. 
+            نقدم حزمة من الدورات التخصصية المصممة بعناية لتلبية متطلبات وتطلعات الكوادر الوطنية وأصحاب العمل.
+        </p>
+        <a href="Researcher.html" class="btn-primary">
+            <i class="fas fa-rocket"></i> <span>استكشف دوراتنا الآن</span>
+        </a>
+    </header>
+
+    <section class="mahara-info-section">
+        <div class="definition-card">
+            <h2>تعريف برنامج مهارات</h2>
+            <p>
+                هو آلية دعم تمكن من إطلاق برامج تدريبية في المهارات العامة والمهارات التخصصية المهنية، بالشراكة مع الجهات التدريبية المرخصة من الجهات المعنية، وموجهة للباحثين عن عمل والموظفين في القطاع الخاص؛ بهدف رفع مهارات الفئات المستهدفة وزيادة فرص توظيفهم في القطاع الخاص وزيادة استقرارهم على رأس العمل، من خلال تقليل الفجوة ما بين المهارات المطلوبة في الوظيفة ومهارات الباحث عن عمل أو الموظف.
+            </p>
+        </div>
+
+        <!-- بداية قسم شروط وأحكام البرنامج -->
+        <div class="terms-section">
+            <h2>شروط وأحكام البرنامج</h2>
+            <div class="terms-list">
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">أن يكون المستفيد سعودي الجنسية.</div>
+                </div>
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">العمر لا يقل عن 18 سنة.</div>
+                </div>
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">أن يكون مسجلاً في الخدمات الإلكترونية لصندوق تنمية الموارد البشرية.</div>
+                </div>
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">أن يكون باحثاً عن عمل، أو أن يكون موظفاً على رأس العمل في القطاع الخاص (حسب بيانات التأمينات الاجتماعية).</div>
+                </div>
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">ألا يكون موظفاً حكومياً نشطاً (حسب بيانات وزارة الموارد البشرية والتنمية الاجتماعية).</div>
+                </div>
+                <div class="term-item">
+                    <div class="term-icon"><i class="fas fa-check"></i></div>
+                    <div class="term-text">ألا يكون قد سبق له الاستفادة من منتج مهارات وفق آلية الدعم.</div>
+                </div>
+            </div>
+        </div>
+        <!-- نهاية قسم شروط وأحكام البرنامج -->
+
+        <div class="goals-header">
+            <h2>أهداف برنامج مهارات</h2>
+        </div>
+        <div class="goals-grid">
+            <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-user-graduate"></i></div>
+                <p>تهيئة الباحثين عن عمل وتطويرهم بالمهارات وفق احتياج سوق العمل.</p>
+            </div>
+            <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-building"></i></div>
+                <p>تزويد أصحاب العمل بالموارد البشرية الوطنية المؤهلة للعمل.</p>
+            </div>
+            <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-briefcase"></i></div>
+                <p>تطوير مهارات الموظفين الجدد للإسهام في استقرارهم على رأس العمل.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- تم حذف بطاقة مرونة التعلم من هنا -->
+    <section class="features-grid">
+        <div class="feature-card">
+            <i class="fas fa-certificate"></i>
+            <h3>شهادات معتمدة</h3>
+            <p>شهادات مهنية تضمن تميزك في سوق العمل التنافسي.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h3>مدربون خبراء</h3>
+            <p>مدربون معتمدون بخبرة تزيد عن 10 سنوات في مجالاتهم المتخصصة.</p>
+        </div>
+    </section>
+
+    <section class="partners-section">
+        <h2 class="partners-title">شركاء النجاح</h2>
+        <div class="partners-slider">
+            <div class="partners-track track-right">
+                <div class="partner-group">
+                    <img src="img-z/z1.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z2.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z3.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z4.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z5.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z6.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z7.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z8.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z9.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z10.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z11.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z12.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z13.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z14.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z15.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z16.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z17.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z18.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z19.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z20.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z21.png" class="partner-logo" alt="شريك">
+                </div>
+                <div class="partner-group">
+                    <img src="img-z/z1.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z2.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z3.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z4.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z5.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z6.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z7.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z8.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z9.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z10.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z11.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z12.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z13.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z14.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z15.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z16.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z17.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z18.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z19.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z20.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z21.png" class="partner-logo" alt="شريك">
+                </div>
+            </div>
+        </div>
+
+        <div class="partners-slider">
+            <div class="partners-track track-left">
+                <div class="partner-group">
+                    <img src="img-z/z22.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z23.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z24.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z25.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z26.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z27.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z28.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z29.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z30.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z31.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z32.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z33.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z34.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z35.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z36.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z37.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z38.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z39.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z40.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z41.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z42.png" class="partner-logo" alt="شريك">
+                </div>
+                <div class="partner-group">
+                    <img src="img-z/z22.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z23.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z24.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z25.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z26.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z27.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z28.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z29.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z30.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z31.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z32.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z33.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z34.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z35.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z36.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z37.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z38.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z39.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z40.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z41.png" class="partner-logo" alt="شريك">
+                    <img src="img-z/z42.png" class="partner-logo" alt="شريك">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+               <img class="footer-img" src="logo_maher.png" alt="">
+                <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+             </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                    <a href="home_1.html">الرئيسية</a> 
+                    <a href="Researcher.html">الدورات التدريبية</a>
+                    <a href="word_1.html">كلمة رئيس المشروع</a>
+                    <a href="gallery_1.html">معرض الصور</a>
+                    <a href="academy_1.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <a href="tel:0539600080" class="contact-link">
+                    <i class="fas fa-phone"></i> 0539600080
+                </a>
+                <a href="mailto:skillsproject23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> skillsproject23@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <script>
+        // دالة جلب اسم المستخدم من الذاكرة المحلية
+        function updateProfileUI() {
+            const data = JSON.parse(localStorage.getItem('profileData') || '{}');
+            if (data.name) {
+                document.getElementById('profileNameLink').textContent = data.name;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProfileUI();
+            
+            // 💡 الكود الخاص بتفعيل زر القائمة (الثلاث شرطات) للجوال
+            const menuToggle = document.getElementById('menuToggle');
+            const navbarMenu = document.getElementById('navbarMenu');
+
+            if (menuToggle && navbarMenu) {
+                menuToggle.addEventListener('click', () => {
+                    // التبديل بين إظهار وإخفاء القائمة
+                    navbarMenu.classList.toggle('active');
+                    
+                    // تغيير شكل الأيقونة لجمالية أفضل
+                    const icon = menuToggle.querySelector('i');
+                    if (navbarMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // تسجيل الخروج
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('profileData');
+                window.location.href = 'index.html';
+            });
+
+            // جعل القائمة العلوية بخلفية بيضاء عند التمرير
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (nav) {
+                    nav.classList.toggle('scrolled', window.scrollY > 50);
+                }
+            });
+
+            // التمرير السلس للروابط الداخلية
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) { target.scrollIntoView({ behavior: 'smooth' }); }
+                });
+            });
+        });
+    </script>
+    <script src="navbar-shared.js"></script>
+</body>
+</html>

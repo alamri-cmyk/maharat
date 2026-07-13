@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | برنامج مهارات</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar-shared.css">
+    
+    <style>
+
+        html {
+            font-size: 14px; 
+        } 
+
+        /* ========================================= */
+        /* 1. الإعدادات العامة وألوان الهوية */
+        /* ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 12px 35px rgba(0, 45, 91, 0.06);
+            --shadow-hover: 0 20px 45px rgba(0, 114, 188, 0.12);
+        }
+
+        /* ========================================= */
+        /* 2. الخلفية والخطوط المتحركة العصرية */
+        /* ========================================= */
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: var(--bg-modern);
+            background-size: 400% 400%;
+            animation: animateBG 20s ease infinite; 
+            overflow-x: hidden;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .animated-lines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; display: flex; justify-content: space-around;
+        }
+        .line { width: 1px; height: 100%; background: rgba(0, 114, 188, 0.05); position: relative; }
+        .line::after {
+            content: ''; position: absolute; top: -50%; left: -1px; width: 3px; height: 15vh;
+            background: linear-gradient(to bottom, transparent, var(--brand-light), transparent);
+            animation: movingLine 8s linear infinite;
+        }
+        .line:nth-child(2)::after { animation-delay: 2s; animation-duration: 10s; }
+        .line:nth-child(3)::after { animation-delay: 4s; animation-duration: 7s; }
+        .line:nth-child(4)::after { animation-delay: 1s; animation-duration: 9s; }
+        .line:nth-child(5)::after { animation-delay: 3s; animation-duration: 6s; }
+
+        @keyframes movingLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes animateBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ========================================= */
+        /* 3. الشريط العلوي (النافبار المحسّن مطابق لـ index) */
+        /* ========================================= */
+        .navbar {
+            position: fixed; top: 0; width: 100%; left: 0; right: 0;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        
+        .navbar-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; gap: 3rem;
+        }
+
+        .logo { height: 60px; transition: transform 0.3s; z-index: 1001; }
+        .logo:hover { transform: scale(1.05); }
+        
+        .navbar-menu {
+            display: flex; align-items: center; flex: 1; justify-content: flex-start; 
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        .menu-toggle {
+            display: none; background: transparent; border: none; font-size: 1.8rem; 
+            color: var(--brand-navy); cursor: pointer; transition: color 0.3s ease;
+        }
+        .menu-toggle:hover { color: var(--brand-blue); }
+
+        /* ========================================= */
+        /* 4. قسم الدخول وإنشاء الحساب (النماذج) */
+        /* ========================================= */
+        .hero {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 9rem 5% 4rem; text-align: center; position: relative; z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 0.5rem;
+            animation: fadeInUp 0.8s ease;
+            background: var(--text-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .hero .subtitle {
+            font-size: 1.15rem; margin-bottom: 2rem; color: var(--text-muted); font-weight: 700;
+            max-width: 500px; animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .login-choices {
+            display: flex; gap: 1rem; justify-content: center;
+            animation: fadeInUp 0.8s ease 0.4s both; margin-bottom: 1.5rem; width: 100%; max-width: 460px;
+        }
+
+        .user-type-btn {
+            flex: 1; padding: 1rem; border-radius: 16px; text-decoration: none; font-weight: 800;
+            font-size: 1.1rem; transition: all 0.3s ease; display: flex; align-items: center;
+            justify-content: center; gap: 0.5rem; border: 2px solid var(--glass-border); 
+            background: rgba(255, 255, 255, 0.7); cursor: pointer; font-family: 'Cairo', sans-serif;
+        }
+
+        .user-type-employee { color: var(--brand-blue); }
+        .user-type-seeker { color: #059669; }
+
+        .user-type-employee.active { background: var(--brand-gradient); color: white; border-color: transparent; box-shadow: var(--shadow); transform: scale(1.03); }
+        .user-type-seeker.active { background: linear-gradient(135deg, #10b981, #059669); color: white; border-color: transparent; box-shadow: var(--shadow); transform: scale(1.03); }
+        .user-type-btn:hover:not(.active) { transform: translateY(-3px); background: var(--white); box-shadow: var(--shadow); }
+
+        .seeker-note {
+            background: rgba(16, 185, 129, 0.1); color: #059669;
+            padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.95rem; font-weight: 700;
+            margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center;
+            gap: 0.5rem; border: 1px solid rgba(16, 185, 129, 0.2); max-width: 380px;
+        }
+
+        .forms-container { max-width: 460px; width: 100%; margin: 0 auto; transition: all 0.5s ease; }
+
+        .login-form {
+            background: var(--glass-bg); backdrop-filter: blur(20px); border-radius: 24px; padding: 2.5rem;
+            box-shadow: var(--shadow); border: 1px solid var(--glass-border);
+            animation: fadeInUp 0.6s ease; opacity: 1; transform: translateY(0);
+            max-height: 1400px; overflow: hidden; text-align: right; color: var(--brand-navy);
+        }
+
+        .login-form:not(.active) { display: none; opacity: 0; transform: translateY(15px); max-height: 0; }
+
+        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 800; font-size: 0.95rem; color: var(--brand-navy); }
+
+        .form-group input {
+            width: 100%; padding: 1rem 1.2rem;
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem; font-family: 'Cairo', sans-serif; font-weight: 600;
+            transition: all 0.3s ease; color: var(--brand-navy); outline: none; display: block;
+        }
+
+        .form-group input:focus {
+            border-color: var(--brand-blue); background: var(--white);
+            box-shadow: 0 0 0 4px rgba(0, 114, 188, 0.1);
+        }
+
+        .form-group input::placeholder { color: #94a3b8; font-weight: 400; }
+
+        .error-message { color: #e11d48; font-size: 0.85rem; margin-top: 0.4rem; display: none; font-weight: 700; }
+
+        .submit-btn {
+            width: 100%; padding: 1rem; border-radius: 16px; text-decoration: none; font-weight: 800;
+            font-size: 1.1rem; transition: all 0.3s ease; display: flex; align-items: center;
+            justify-content: center; gap: 0.5rem; box-shadow: var(--shadow);
+            background: var(--brand-gradient); color: var(--white); border: none; cursor: pointer; 
+            font-family: 'Cairo', sans-serif; margin-top: 1.5rem; 
+        }
+
+        .submit-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #cbd5e1; box-shadow: none; color: white; }
+
+        .auth-switch {
+            text-align: center; margin-top: 1.5rem; padding: 1rem;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 16px; border: 1px solid var(--glass-border);
+            font-size: 0.95rem; font-weight: 700; transition: all 0.3s ease;
+        }
+
+        .auth-switch p { margin: 0; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .auth-switch a {
+            color: var(--brand-navy); text-decoration: none; padding: 0.4rem 1rem;
+            background: rgba(0, 114, 188, 0.05); border-radius: 50px;
+            transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.3rem;
+            border: 1px solid rgba(0, 114, 188, 0.1);
+        }
+
+        .auth-switch a:hover {
+            background: var(--brand-gradient); color: white; transform: translateY(-2px); border-color: transparent; box-shadow: var(--shadow);
+        }
+
+        /* ========================================= */
+        /* 5. الفوتر المضيء والمتناسق */
+        /* ========================================= */
+        .footer {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border); padding: 5rem 5% 2rem; position: relative; z-index: 10;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; }
+        .footer-section h3 { margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 900; color: var(--brand-navy); border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .footer-section p { color: var(--text-muted); line-height: 1.8; font-weight: 700; }
+        .footer-section a:not(.contact-link) { color: var(--brand-navy); text-decoration: none; display: block; margin-bottom: 0.8rem; font-weight: 800; transition: all 0.3s ease; }
+        .footer-section a:not(.contact-link):hover { color: var(--brand-blue); transform: translateX(-8px); }
+        .contact-link {
+            display: flex; align-items: center; gap: 1rem; color: var(--brand-navy); text-decoration: none;
+            background: rgba(0, 45, 91, 0.04); padding: 0.8rem 1.2rem; border-radius: 12px; margin-bottom: 1rem;
+            border: 1px solid rgba(0, 45, 91, 0.08); transition: all 0.4s ease; font-weight: 800;
+        }
+        .footer-img { height: 65px; margin-bottom: 1rem; }
+        .contact-link:hover { transform: translateY(-5px); border-color: var(--brand-light); box-shadow: var(--shadow); color: var(--brand-blue); background: var(--white); }
+        .contact-link i { font-size: 1.3rem; color: var(--brand-blue); }
+        .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 4rem; border-top: 1px solid rgba(0, 0, 0, 0.08); font-size: 0.95rem; color: var(--text-muted); font-weight: 800; }
+
+        /* ========================================= */
+        /* الشاشات التجاوبية (مطابق لأسلوب index) */
+        /* ========================================= */
+        @media (max-width: 1024px) {
+            .menu-toggle { display: block; } 
+            
+            .navbar-menu {
+                position: absolute; top: 100%; right: 0; width: 100%; background: var(--white);
+                flex-direction: column; padding: 2rem 5%; box-shadow: var(--shadow);
+                border-top: 1px solid var(--glass-border);
+                opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease;
+            }
+            .navbar-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+            
+            .nav-links { flex-direction: column; width: 100%; gap: 1.5rem; margin-bottom: 0rem; margin-right: 0; text-align: center; }
+        }
+
+        @media (max-width: 768px) {
+            .login-choices { flex-direction: column; align-items: center; gap: 0.8rem; }
+            .user-type-btn { width: 100%; max-width: 100%; }
+            .footer-content { grid-template-columns: 1fr; gap: 2rem; }
+            .hero { padding-top: 10rem; }
+            .forms-container { max-width: 95%; }
+            .login-form { padding: 2rem 1.5rem; }
+            .auth-switch p { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="animated-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links" id="navLinks">
+                     <li><a href="index.html">الرئيسية</a></li>
+                     <li><a href="employee.html">الدورات التدريبية</a></li>
+                     <li><a href="word.html">كلمة رئيس المشروع</a></li>
+                     <li><a href="gallery.html">معرض الصور</a></li>
+                     <li><a href="academy.html">عن المعهد</a></li>   
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1 id="mainTitle">إنشاء حساب جديد</h1>
+        <p class="subtitle" id="mainSubtitle">اختر نوع حسابك وأدخل بياناتك للبدء في رحلة تطوير مهاراتك</p>
+        
+        <div class="login-choices" id="signupTabs">
+            <button class="user-type-btn user-type-employee active" data-type="employee">
+                <i class="fas fa-briefcase icon"></i>
+                <span>موظف</span>
+            </button>
+            <button class="user-type-btn user-type-seeker" data-type="seeker">
+                <i class="fas fa-user-graduate icon"></i>
+                <span>باحث عن عمل</span>
+            </button>
+        </div>
+
+        <div class="seeker-note" id="seekerNote" style="display: none;">
+            <i class="fas fa-info-circle"></i>
+            <span>* يشترط ألا يكون مسجلاً في التأمينات الاجتماعية</span>
+        </div>
+
+        <div class="forms-container">
+            <form class="login-form active" id="employeeForm">
+                <div class="form-group">
+                    <label for="empFullName">الاسم الكامل</label>
+                    <input type="text" id="empFullName" placeholder="الاسم الثنائي على الأقل" required>
+                    <div class="error-message" id="empNameError">الاسم مطلوب (حرفين على الأقل)</div>
+                </div>
+                <!-- بداية التعديل: خانة الهوية الوطنية لحساب الموظف -->
+                <div class="form-group">
+                    <label for="empNationalId">الهوية الوطنية</label>
+                    <input type="text" id="empNationalId" placeholder="أدخل 10 أرقام" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div class="error-message" id="empNationalIdError">رقم الهوية يجب أن يتكون من 10 أرقام فقط</div>
+                </div>
+                <!-- نهاية التعديل -->
+                <div class="form-group">
+                    <label for="empEmail">البريد الإلكتروني</label>
+                    <input type="email" id="empEmail" placeholder="example@domain.com" required dir="ltr" style="text-align: right;">
+                    <div class="error-message" id="empEmailError">يجب إدخال بريد إلكتروني صحيح ينتهي بـ .com أو .sa</div>
+                </div>
+                <div class="form-group">
+                    <label for="empPhone">رقم الجوال</label>
+                    <input type="tel" id="empPhone" placeholder="05xxxxxxxx" required>
+                    <div class="error-message" id="empPhoneError">يجب أن يتكون من 10 أرقام ويبدأ بـ 05</div>
+                </div>
+                <div class="form-group">
+                    <label for="empPassword">كلمة السر</label>
+                    <input type="password" id="empPassword" placeholder="••••••••" required dir="ltr" style="text-align: right;">
+                    <div class="error-message" id="empPasswordError">يجب أن تحتوي على حروف إنجليزية وأرقام ولا تقل عن 8 أحرف</div>
+                </div>
+                <button type="submit" class="submit-btn" id="empSubmit" disabled>
+                    <i class="fas fa-user-plus"></i>
+                    <span>إنشاء حساب موظف</span>
+                </button>
+            </form>
+
+            <form class="login-form" id="seekerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="seekFullName">الاسم الكامل</label>
+                    <input type="text" id="seekFullName" placeholder="الاسم الثنائي على الأقل" required>
+                    <div class="error-message" id="seekNameError">الاسم مطلوب (حرفين على الأقل)</div>
+                </div>
+                <!-- بداية التعديل: خانة الهوية الوطنية لحساب باحث عن عمل -->
+                <div class="form-group">
+                    <label for="seekNationalId">الهوية الوطنية</label>
+                    <input type="text" id="seekNationalId" placeholder="أدخل 10 أرقام" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div class="error-message" id="seekNationalIdError">رقم الهوية يجب أن يتكون من 10 أرقام فقط</div>
+                </div>
+                <!-- نهاية التعديل -->
+                <div class="form-group">
+                    <label for="seekEmail">البريد الإلكتروني</label>
+                    <input type="email" id="seekEmail" placeholder="example@domain.com" required dir="ltr" style="text-align: right;">
+                    <div class="error-message" id="seekEmailError">يجب إدخال بريد إلكتروني صحيح ينتهي بـ .com أو .sa</div>
+                </div>
+                <div class="form-group">
+                    <label for="seekPhone">رقم الجوال</label>
+                    <input type="tel" id="seekPhone" placeholder="05xxxxxxxx" required>
+                    <div class="error-message" id="seekPhoneError">يجب أن يتكون من 10 أرقام ويبدأ بـ 05</div>
+                </div>
+                <div class="form-group">
+                    <label for="seekPassword">كلمة المرور</label>
+                    <input type="password" id="seekPassword" placeholder="••••••••" required dir="ltr" style="text-align: right;">
+                    <div class="error-message" id="seekPasswordError">يجب أن تحتوي على حروف إنجليزية وأرقام ولا تقل عن 8 أحرف</div>
+                </div>
+                <button type="submit" class="submit-btn" id="seekSubmit" disabled>
+                    <i class="fas fa-user-plus"></i>
+                    <span>إنشاء حساب باحث عن عمل</span>
+                </button>
+            </form>
+
+            <form class="login-form" id="loginOnlyForm" style="display: none;">
+                <div class="form-group">
+                    <label for="loginEmail">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" placeholder="example@domain.com" required dir="ltr" style="text-align: right;">
+                    <div class="error-message" id="loginEmailError">يجب إدخال بريد إلكتروني صحيح ينتهي بـ .com أو .sa</div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required dir="ltr" style="text-align: right;">
+                </div>
+                <div class="error-message" id="loginAuthError" style="text-align: center; margin-bottom: 1rem; font-size: 0.95rem;">البريد الإلكتروني أو كلمة المرور غير صحيحة.</div>
+                <button type="submit" class="submit-btn" id="loginSubmit" disabled>
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                <p id="switchToLoginText">
+                    لديك حساب بالفعل؟ 
+                    <a href="#" id="showLoginBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a>
+                </p>
+                <p id="switchToSignupText" style="display: none;">
+                    ليس لديك حساب؟ 
+                    <a href="#" id="showSignupBtn"><i class="fas fa-user-plus"></i> إنشاء حساب جديد</a>
+                </p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img class="footer-img" src="logo_maher.png" alt="">
+                <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                    <a href="index.html">الرئيسية</a>
+                    <a href="employee.html">الدورات التدريبية</a>
+                    <a href="word.html">كلمة رئيس المشروع</a>
+                    <a href="gallery.html">معرض الصور</a>
+                    <a href="academy.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <a href="tel:0539600080" class="contact-link">
+                    <i class="fas fa-phone"></i> 0539600080
+                </a>
+                <a href="mailto:skillsproject23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> skillsproject23@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = "https://jjsvdmetspjcwlojeoqr.supabase.co"; 
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impqc3ZkbWV0c3BqY3dsb2plb3FyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMzgzMzIsImV4cCI6MjA5MzYxNDMzMn0.mQVqL6W3OPc5y5E3aUkI-A9W1fiz7IiqEWxPTzTy0WU";
+      const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      async function testConnection() {
+        const { data, error } = await supabaseClient.from('users_data').select('*');
+        if(error) {
+            console.error("يوجد خطأ في الاتصال:", error);
+        } else {
+            console.log("تم الاتصال بقاعدة البيانات بنجاح!", data);
+        }
+      }
+      testConnection();
+    </script>
+
+    <script>
+        function validateName(name) { return name.trim().length >= 2; }
+
+        // دالة جديدة للتحقق من الهوية الوطنية (10 أرقام فقط)
+        function validateNationalId(id) { return /^\d{10}$/.test(id); }
+
+        function validateEmail(email) {
+            const englishOnly = /^[a-zA-Z0-9@._-]+$/.test(email);
+            const hasAt = email.includes('@');
+            const validEnding = email.toLowerCase().endsWith('.com') || email.toLowerCase().endsWith('.sa');
+            return englishOnly && hasAt && validEnding;
+        }
+
+        function validatePhone(phone) { return /^05\d{8}$/.test(phone); }
+
+        function validatePassword(password) {
+            const hasEnglishLetters = /[a-zA-Z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const isLongEnough = password.length >= 8;
+            return hasEnglishLetters && hasNumbers && isLongEnough;
+        }
+
+        function validateEmployeeForm() {
+            const name = document.getElementById('empFullName').value;
+            const nationalId = document.getElementById('empNationalId').value;
+            const email = document.getElementById('empEmail').value;
+            const phone = document.getElementById('empPhone').value;
+            const password = document.getElementById('empPassword').value;
+
+            document.getElementById('empNameError').style.display = (name && !validateName(name)) ? 'block' : 'none';
+            document.getElementById('empNationalIdError').style.display = (nationalId && !validateNationalId(nationalId)) ? 'block' : 'none';
+            document.getElementById('empEmailError').style.display = (email && !validateEmail(email)) ? 'block' : 'none';
+            document.getElementById('empPhoneError').style.display = (phone && !validatePhone(phone)) ? 'block' : 'none';
+            document.getElementById('empPasswordError').style.display = (password && !validatePassword(password)) ? 'block' : 'none';
+
+            const isValid = validateName(name) && validateNationalId(nationalId) && validateEmail(email) && validatePhone(phone) && validatePassword(password);
+            document.getElementById('empSubmit').disabled = !isValid;
+        }
+
+        function validateSeekerForm() {
+            const name = document.getElementById('seekFullName').value;
+            const nationalId = document.getElementById('seekNationalId').value;
+            const email = document.getElementById('seekEmail').value;
+            const phone = document.getElementById('seekPhone').value;
+            const password = document.getElementById('seekPassword').value;
+
+            document.getElementById('seekNameError').style.display = (name && !validateName(name)) ? 'block' : 'none';
+            document.getElementById('seekNationalIdError').style.display = (nationalId && !validateNationalId(nationalId)) ? 'block' : 'none';
+            document.getElementById('seekEmailError').style.display = (email && !validateEmail(email)) ? 'block' : 'none';
+            document.getElementById('seekPhoneError').style.display = (phone && !validatePhone(phone)) ? 'block' : 'none';
+            document.getElementById('seekPasswordError').style.display = (password && !validatePassword(password)) ? 'block' : 'none';
+
+            const isValid = validateName(name) && validateNationalId(nationalId) && validateEmail(email) && validatePhone(phone) && validatePassword(password);
+            document.getElementById('seekSubmit').disabled = !isValid;
+        }
+
+        function validateLoginForm() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            document.getElementById('loginEmailError').style.display = (email && !validateEmail(email)) ? 'block' : 'none';
+
+            const isValid = validateEmail(email) && password.length > 0;
+            document.getElementById('loginSubmit').disabled = !isValid;
+        }
+
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // ====== 💡 الكود المضاف لإصلاح زر القائمة والتجاوب (الجوال) ======
+            const menuToggle = document.getElementById('menuToggle');
+            const navbarMenu = document.getElementById('navbarMenu');
+
+            if (menuToggle && navbarMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navbarMenu.classList.toggle('active');
+                    
+                    const icon = menuToggle.querySelector('i');
+                    if (navbarMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            // =========================================================
+
+            if (window.location.hash === '#login') {
+                setTimeout(() => showLoginBtn.click(), 100); 
+            }
+
+            const employeeBtn = document.querySelector('.user-type-employee');
+            const seekerBtn = document.querySelector('.user-type-seeker');
+            const employeeForm = document.getElementById('employeeForm');
+            const seekerForm = document.getElementById('seekerForm');
+            const seekerNote = document.getElementById('seekerNote');
+            
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    if (btn.dataset.type === 'employee') {
+                        employeeForm.classList.add('active');
+                        seekerForm.classList.remove('active');
+                        seekerNote.style.display = 'none';
+                        setTimeout(() => seekerForm.style.display = 'none', 200);
+                        employeeForm.style.display = 'block';
+                    } else {
+                        employeeForm.classList.remove('active');
+                        seekerForm.classList.add('active');
+                        seekerNote.style.display = 'flex';
+                        setTimeout(() => employeeForm.style.display = 'none', 200);
+                        seekerForm.style.display = 'block';
+                    }
+                });
+            });
+
+            const showLoginBtn = document.getElementById('showLoginBtn');
+            const showSignupBtn = document.getElementById('showSignupBtn');
+            const loginOnlyForm = document.getElementById('loginOnlyForm');
+            const signupTabs = document.getElementById('signupTabs');
+            
+            const switchToLoginText = document.getElementById('switchToLoginText');
+            const switchToSignupText = document.getElementById('switchToSignupText');
+            
+            const mainTitle = document.getElementById('mainTitle');
+            const mainSubtitle = document.getElementById('mainSubtitle');
+
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainTitle.textContent = "تسجيل الدخول";
+                mainSubtitle.textContent = "أهلاً بك مجدداً في منصة مهارات، أدخل بياناتك للمتابعة";
+                
+                signupTabs.style.display = 'none';
+                seekerNote.style.display = 'none';
+                employeeForm.classList.remove('active');
+                employeeForm.style.display = 'none';
+                seekerForm.classList.remove('active');
+                seekerForm.style.display = 'none';
+                
+                loginOnlyForm.style.display = 'block';
+                setTimeout(() => loginOnlyForm.classList.add('active'), 10);
+                
+                switchToLoginText.style.display = 'none';
+                switchToSignupText.style.display = 'flex';
+            });
+
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainTitle.textContent = "إنشاء حساب جديد";
+                mainSubtitle.textContent = "اختر نوع حسابك وأدخل بياناتك للبدء في رحلة تطوير مهاراتك";
+                
+                signupTabs.style.display = 'flex';
+                
+                loginOnlyForm.classList.remove('active');
+                loginOnlyForm.style.display = 'none';
+                
+                if (employeeBtn.classList.contains('active')) {
+                    employeeForm.style.display = 'block';
+                    setTimeout(() => employeeForm.classList.add('active'), 10);
+                } else {
+                    seekerForm.style.display = 'block';
+                    seekerNote.style.display = 'flex';
+                    setTimeout(() => seekerForm.classList.add('active'), 10);
+                }
+                
+                switchToLoginText.style.display = 'flex';
+                switchToSignupText.style.display = 'none';
+            });
+
+            // إضافة حقل الهوية الوطنية للتحقق الفوري عند الإدخال
+            ['empFullName', 'empNationalId', 'empEmail', 'empPhone', 'empPassword'].forEach(id => {
+                document.getElementById(id).addEventListener('input', validateEmployeeForm);
+            });
+
+            ['seekFullName', 'seekNationalId', 'seekEmail', 'seekPhone', 'seekPassword'].forEach(id => {
+                document.getElementById(id).addEventListener('input', validateSeekerForm);
+            });
+
+            ['loginEmail', 'loginPassword'].forEach(id => {
+                document.getElementById(id).addEventListener('input', validateLoginForm);
+            });
+
+            // تعديل دالة الإرسال لتشمل الهوية الوطنية
+            async function handleSubmission(btnId, nameId, nationalIdId, emailId, phoneId, passwordId, userType) {
+                const name = document.getElementById(nameId).value;
+                const nationalId = document.getElementById(nationalIdId).value; // تم إضافة المتغير هنا
+                const email = document.getElementById(emailId).value;
+                const phone = document.getElementById(phoneId).value;
+                const password = document.getElementById(passwordId).value;
+                
+                const submitBtn = document.getElementById(btnId);
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري معالجة الطلب...</span>';
+
+                try {
+                    const { data: existing } = await supabaseClient
+                        .from('users_data')
+                        .select('id')
+                        .eq('email', email);
+
+                    if (existing && existing.length > 0) {
+                        alert("هذا البريد الإلكتروني مسجل لدينا بالفعل!");
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                        return;
+                    }
+
+                    // إرسال national_id إلى قاعدة البيانات
+                    const { error } = await supabaseClient
+                        .from('users_data')
+                        .insert([{ name, national_id: nationalId, email, phone, password, type: userType }]);
+
+                    if (error) throw error;
+
+                    localStorage.setItem('profileData', JSON.stringify({ name, email, phone, type: userType }));
+
+                    if (userType === 'seeker') {
+                        window.location.href = 'home_1.html';
+                    } else {
+                        window.location.href = 'home_2.html';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+
+            document.getElementById('employeeForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // تحديث استدعاء الدالة ليشمل حقل الهوية الوطنية
+                handleSubmission('empSubmit', 'empFullName', 'empNationalId', 'empEmail', 'empPhone', 'empPassword', 'employee');
+            });
+
+            document.getElementById('seekerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // تحديث استدعاء الدالة ليشمل حقل الهوية الوطنية
+                handleSubmission('seekSubmit', 'seekFullName', 'seekNationalId', 'seekEmail', 'seekPhone', 'seekPassword', 'seeker');
+            });
+
+            document.getElementById('loginOnlyForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const submitBtn = document.getElementById('loginSubmit');
+                const authError = document.getElementById('loginAuthError');
+                
+                authError.style.display = 'none';
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري التحقق...</span>';
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('users_data')
+                        .select('*')
+                        .eq('email', email)
+                        .eq('password', password);
+
+                    if (data && data.length > 0) {
+                        const validUser = data[0];
+                        localStorage.setItem('profileData', JSON.stringify({
+                            name: validUser.name,
+                            email: validUser.email,
+                            phone: validUser.phone,
+                            type: validUser.type
+                        }));
+
+                        if (validUser.type === 'leader') {
+                            window.location.href = 'leader.html';
+                        } else if (validUser.type === 'seeker') {
+                            window.location.href = 'home_1.html';
+                        } else {
+                            window.location.href = 'home_2.html';
+                        }
+                    } else {
+                        authError.style.display = 'block';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    authError.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            });
+        });
+    </script>
+    <script src="navbar-shared.js"></script>
+</body>
+</html>

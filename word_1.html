@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج مهارات | الباحث عن عمل - كلمة رئيس القسم</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar-shared.css">
+    
+   <style>
+        /* الإعدادات العامة وألوان الهوية */
+        html {
+            font-size: 14px; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 12px 35px rgba(0, 45, 91, 0.06);
+            --shadow-hover: 0 20px 45px rgba(0, 114, 188, 0.12);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-modern);
+            background-size: 400% 400%;
+            animation: animateBG 20s ease infinite; 
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .animated-lines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; display: flex; justify-content: space-around;
+        }
+        .line { width: 1px; height: 100%; background: rgba(0, 114, 188, 0.05); position: relative; }
+        .line::after {
+            content: ''; position: absolute; top: -50%; left: -1px; width: 3px; height: 15vh;
+            background: linear-gradient(to bottom, transparent, var(--brand-light), transparent);
+            animation: movingLine 8s linear infinite;
+        }
+        .line:nth-child(2)::after { animation-delay: 2s; animation-duration: 10s; }
+        .line:nth-child(3)::after { animation-delay: 4s; animation-duration: 7s; }
+        .line:nth-child(4)::after { animation-delay: 1s; animation-duration: 9s; }
+        .line:nth-child(5)::after { animation-delay: 3s; animation-duration: 6s; }
+
+        @keyframes movingLine { 0% { top: -50%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes animateBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ========================================= */
+        /* الشريط العلوي (النافبار) - مطابق لـ home_2 */
+        /* ========================================= */
+        .navbar {
+            position: fixed; top: 0; width: 100%; left: 0; right: 0;
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        
+        .navbar-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; gap: 3rem;
+        }
+
+        .logo { height: 60px; transition: transform 0.3s; z-index: 1001; }
+        .logo:hover { transform: scale(1.05); }
+        
+        .menu-toggle {
+            display: none; background: transparent; border: none; font-size: 1.8rem; 
+            color: var(--brand-navy); cursor: pointer; transition: color 0.3s ease;
+        }
+        .menu-toggle:hover { color: var(--brand-blue); }
+
+        .navbar-menu {
+            display: flex; align-items: center; justify-content: space-between; 
+            flex-grow: 1; margin-right: 3rem;
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-auth { display: flex; align-items: center; gap: 1rem; }
+        
+        .user-profile-badge { 
+            display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 1rem 0.4rem 0.8rem; 
+            border: 1px solid var(--glass-border); border-radius: 50px; text-decoration: none; 
+            background: rgba(255, 255, 255, 0.5); transition: all 0.4s ease; 
+        }
+        .user-profile-badge:hover { border-color: var(--brand-light); background: var(--white); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .user-icon { font-size: 2.2rem; color: var(--brand-blue); transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-icon { color: var(--brand-navy); }
+        .user-info { display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
+        .user-name { font-weight: 800; color: var(--brand-navy); font-size: 1rem; transition: color 0.3s ease; }
+        .user-profile-badge:hover .user-name { color: var(--brand-blue); }
+        .user-role { font-size: 0.75rem; font-weight: 800; color: white; background: var(--brand-gradient); padding: 0.1rem 0.6rem; border-radius: 12px; margin-top: 0.3rem; display: inline-block; width: fit-content; }
+        
+        .btn-logout { 
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem; 
+            padding: 0.6rem 1.2rem; border-radius: 50px; font-weight: 800; font-size: 0.95rem; 
+            border: 1px solid rgba(225, 29, 72, 0.3); cursor: pointer; font-family: 'Cairo', sans-serif; 
+            transition: all 0.4s ease; background: rgba(225, 29, 72, 0.05); color: #e11d48; 
+        }
+        .btn-logout:hover { background: #e11d48; color: white; transform: translateY(-2px); border-color: transparent; box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2); }
+
+        /* ========================================= */
+        /* تنسيق قسم الكلمة والنصوص المتجاوبة */
+        /* ========================================= */
+        .speech-section { 
+            flex-grow: 1;
+            padding: 10rem 5% 5rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            animation: fadeInUp 0.8s ease; 
+        }
+        
+        .definition-card {
+            background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 3.5rem 3rem; text-align: right; box-shadow: var(--shadow);
+            position: relative; overflow: hidden; max-width: 900px; width: 100%;
+        }
+        .definition-card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--brand-gradient); }
+        .definition-card::after { content: '\f19d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: -10px; left: 20px; font-size: 10rem; color: rgba(0, 114, 188, 0.03); transform: rotate(-15deg); pointer-events: none; }
+        
+        .definition-card h2 { color: var(--brand-navy); font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1.5rem; font-weight: 800; text-align: center; }
+        .definition-card h3 { color: var(--brand-blue); font-size: clamp(1.05rem, 2vw, 1.3rem); margin-top: 1.5rem; margin-bottom: 0.8rem; font-weight: 700; }
+        .definition-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; font-weight: 600; margin-bottom: 1.2rem; text-align: justify; }
+        
+        .definition-card ul, .definition-card ol { margin-bottom: 1.2rem; padding-right: 2rem; }
+        .definition-card li { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; font-weight: 600; margin-bottom: 0.5rem; text-align: justify; }
+        .definition-card .thank-you-list { list-style-type: disc; margin-top: 0.8rem; }
+        .definition-card .thank-you-list li { margin-bottom: 0.4rem; font-weight: 600; }
+
+        .signature-box { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0, 114, 188, 0.2); text-align: left; }
+        .signature-box p { margin-bottom: 0.2rem; text-align: left; font-size: 0.9rem; }
+        .signature-box .name { font-weight: 800; color: var(--brand-navy); font-size: 1.1rem; }
+
+        .center-text {
+            text-align: center;
+            font-weight: 800;
+            color: var(--brand-navy);
+            margin-top: 2rem;
+            font-size: 1.05rem !important; 
+        }
+
+        /* الفوتر */
+        .footer {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border); padding: 4rem 5% 2rem; position: relative; z-index: 10; margin-top: auto;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; }
+        .footer-section h3 { margin-bottom: 1.2rem; font-size: 1.2rem; font-weight: 800; color: var(--brand-navy); border-right: 4px solid var(--brand-blue); padding-right: 15px; }
+        .footer-section p { color: var(--text-muted); line-height: 1.7; font-weight: 600; font-size: 0.9rem; }
+        .footer-section a:not(.contact-link) { color: var(--brand-navy); font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.6rem; font-weight: 700; transition: all 0.3s ease; }
+        .footer-section a:not(.contact-link):hover { color: var(--brand-blue); transform: translateX(-8px); }
+        .contact-link {
+            display: flex; align-items: center; gap: 0.8rem; color: var(--brand-navy); text-decoration: none; font-size: 0.9rem;
+            background: rgba(0, 45, 91, 0.04); padding: 0.6rem 1rem; border-radius: 12px; margin-bottom: 0.8rem;
+            border: 1px solid rgba(0, 45, 91, 0.08); transition: all 0.4s ease; font-weight: 700;
+        }
+        .footer-img { height: 55px; margin-bottom: 1rem; }
+        .contact-link:hover { transform: translateY(-3px); border-color: var(--brand-light); box-shadow: var(--shadow); color: var(--brand-blue); background: var(--white); }
+        .contact-link i { font-size: 1.1rem; color: var(--brand-blue); }
+        .footer-bottom { text-align: center; padding-top: 1.5rem; margin-top: 3rem; border-top: 1px solid rgba(0, 0, 0, 0.08); font-size: 0.85rem; color: var(--text-muted); font-weight: 700; }
+
+        /* ========================================= */
+        /* التجاوب مع الجوال (Media Queries) */
+        /* ========================================= */
+        @media (max-width: 1024px) {
+            .menu-toggle { display: block; }
+            .navbar-menu {
+                position: absolute; top: 100%; right: 0; width: 100%; background: var(--white);
+                flex-direction: column; padding: 2rem 5%; box-shadow: var(--shadow);
+                border-top: 1px solid var(--glass-border);
+                opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease;
+            }
+            .navbar-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+            
+            .nav-links { flex-direction: column; width: 100%; gap: 1.5rem; margin-bottom: 2rem; margin-right: 0; text-align: center; }
+            .nav-auth { width: 100%; flex-direction: column; justify-content: center; gap: 1rem; }
+            
+            .definition-card { padding: 2rem 1.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .user-profile-badge { width: 100%; justify-content: center; }
+            .btn-logout { width: 100%; }
+            .footer-content { grid-template-columns: 1fr; text-align: right; gap: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="animated-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- النافبار الخاصة بـ home_1 مع تفعيل الثلاث شرطات -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <!-- زر القائمة (الثلاث شرطات) -->
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="home_1.html">الرئيسية</a></li>
+                    
+                    <li><a href="Researcher.html">الدورات التدريبية</a></li>
+                    <li><a href="word_1.html">كلمة رئيس المشروع</a></li>
+                    <li><a href="gallery_1.html">معرض الصور</a></li>
+                    <li><a href="academy_1.html">عن المعهد</a></li>
+                </ul>
+                <div class="nav-auth" id="navAuth">
+                    <a href="profile1.html" class="user-profile-badge">
+                        <i class="fas fa-user-circle user-icon"></i>
+                        <div class="user-info">
+                            <span id="profileNameLink" class="user-name">أحمد محمد</span>
+                            <span class="user-role">باحث عن عمل</span>
+                        </div>
+                    </a>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- قسم الكلمة الاحترافي -->
+    <section class="speech-section">
+        <div class="definition-card">
+            <h2>كلمة رئيس القسم</h2>
+            
+            <p class="center-text">الحمد لله رب العالمين، والصلاة والسلام على سيدنا محمد وعلى آله وصحبه أجمعين.</p>
+            
+            <p>
+                يســرني أن أُرحّــب بكــم جميعــاً فــي إطــار هــذه الجهــود الوطنيــة المخلصــة التــي يبذلهــا برنامــج «مهــارات» المدعــوم مــن صنــدوق المــوارد البشــرية (هــدف) مشــكوراً، وهــو برنامــج تدريبــي إســتراتيجي ينــدرج تحــت مظلــة رؤيــة المملكــة العربيــة الســعودية (2030)، ويُعنــى بتطويــر القــوى العاملــة الوطنيــة مــن خلال إكســابها المهــارات اللازمــة لمواكبــة متطلبات ســوق العمــل المتغير.
+            </p>
+            
+            <h3>يركز برنامج «مهارات» على فئتين أساسيتين:</h3>
+            <ol>
+                <li><strong>المواطنين الباِّحثين عن عمل:</strong> إذ يهدف البرنامج إلى تمكينهم من الخبرات العملية والمهارات التطبيقيــة التــي تزيــد مــن فــرص توظيفهــم فــي القطــاع الخــاص، وتســهم فــي بنــاء قاعــدة بشــرية مؤهلــة قــادرة علــى المنافســة فــي ســوق العمل.</li>
+                <li><strong>الموظفيــن الســعوديين فــي القطــاع الخــاص:</strong> بهــدف دعمهــم بمهــارات حديثــة تســهم فــي تطويــر أدائهــم الوظيفــي، وتعــزز قدرتهــم علــى التكيــف مــع المســتجدات المهنيــة والتكنولوجيــة؛ ممــا ينعكــس إيجابًــا علــى كفــاءة المؤسســات التــي يعملــون بهــا.</li>
+            </ol>
+            
+            <p>
+                يتضمــن البرنامــج مجموعــة شــاملة مــن المســارات التدريبيــة المصممــة خصيصاً لتلبيــة إحتياجات الســوق، وتغطــي مجــالات متعــددة تشــمل المهــارات التقنيــة، والجوانــب الســلوكية، وإدارة العمليــات الإداريــة والماليــة، وخدمــة العمــلاء، وغيرها.
+            </p>
+            
+            <p>
+                إن هــدف جامعــة الملــك ســعود ممثلــة بمعهــد الملــك عبــدالله للبحــوث والدراســات الاستشــارية مــن المشــاركة فــي هــذا البرنامــج هــو اســتثمار الطاقــات البشــرية الوطنيــة، ودعــم الأفــراد بمفاتيــح النجــاح المهنــي، وبنــاء كــوادر بشــرية قــادرة علــى قيــادة المؤسســات نحــو التميــز والإنتاجيــة.
+            </p>
+            
+            <h3>وختاماً، نشكر كل من أسهم في صياغة هذا البرنامج الوطني وتنفيذه، وأخص بالشكر:</h3>
+            <ul class="thank-you-list">
+                <li>سعادة مدير الجامعة المكلف الأستاذ الدكتور / علي بن محمد مسملي</li>
+                <li>سعادة عميد معهد الملك عبدالله للبحوث والدراسات الاستشارية الدكتور / عبدالله الثابت</li>
+                <li>سعادة وكيل معهد الملك عبدالله للبحوث والدراسات الاستشارية الدكتور / أحمد العامري</li>
+                <li>سعادة مدير التدريب بمعهد الملك عبدالله للبحوث والدراسات الاستشارية أ. إبراهيم الهزاع</li>
+                <li>سعادة منسقة المشروع بمعهد الملك عبدالله للبحوث والدراسات الاستشارية أ. لمى العريني</li>
+                <li>سعادة منسقة المشروع بمعهد الملك عبدالله للبحوث والدراسات الاستشارية أ. الشيماء الزهراني</li>
+                <li>سعادة المهندس / نادر الشناوي (رئيس برنامج دعم التدريب بصندوق الموارد البشرية)</li>
+                <li>سعادة الدكتورة / إيمان المجاهد (خبيرة تدريب بصندوق الموارد البشرية)</li>
+                <li>سعادة الأستاذ / محمد مطارد العنزي (أخصائي متقدم تدريب بصندوق الموارد البشرية)</li>
+                <li>سعادة الدكتور / ماجد الغانم (أخصائي متقدم تدريب بصندوق الموارد البشرية)</li>
+            </ul>
+            
+            <p>
+                والشكر موصول لكل فريق العمل من مدربين ومصممين ومنسقين وشركاء إستراتيجيين. ونسأل الله التوفيق لجميع المشاركين في تحقيق طموِّحاتهم المهنية، وأن يكون هذا البرنامج خطوة فاعلة نحو مستقبل واعد لوطننا.
+            </p>
+            
+            <!-- العبارة الختامية الموسطة -->
+            <p class="center-text">والحمد لله رب العالمين.</p>
+            
+            <div class="signature-box">
+                <p class="name">أ.د سلطان بن هويدي المطيري</p>
+                <p>مدير مشروع مهارات بجامعة الملك سعود</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر الخاص بـ home_1 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img class="footer-img" src="logo_maher.png" alt="">
+                <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <a href="home_1.html">الرئيسية</a>
+                
+                <a href="Researcher.html">الدورات التدريبية</a>
+                <a href="word_1.html">كلمة رئيس المشروع</a>
+                <a href="gallery_1.html">معرض الصور</a>
+                <a href="academy_1.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <a href="tel:0539600080" class="contact-link">
+                    <i class="fas fa-phone"></i> 0539600080
+                </a>
+                <a href="mailto:skillsproject23@gmail.com" class="contact-link">
+                    <i class="fas fa-envelope"></i> skillsproject23@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <!-- سكريبت تشغيل القائمة في الجوال وغيرها -->
+    <script>
+        // تحديث اسم المستخدم
+        function updateProfileUI() {
+            const data = JSON.parse(localStorage.getItem('profileData') || '{}');
+            if (data.name) {
+                document.getElementById('profileNameLink').textContent = data.name;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProfileUI();
+            
+            // تسجيل الخروج
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('profileData');
+                window.location.href = 'index.html';
+            });
+
+            // تغيير شفافية النافبار عند التمرير
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (nav) {
+                    nav.classList.toggle('scrolled', window.scrollY > 50);
+                }
+            });
+
+            // كود تشغيل أيقونة القائمة (الثلاث شرطات) للجوال
+            const menuToggle = document.getElementById('menuToggle');
+            const navbarMenu = document.getElementById('navbarMenu');
+
+            if(menuToggle && navbarMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navbarMenu.classList.toggle('active');
+                    // تغيير الأيقونة بين الثلاث شرطات وعلامة الإغلاق (X)
+                    const icon = menuToggle.querySelector('i');
+                    if(navbarMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="navbar-shared.js"></script>
+</body>
+</html>

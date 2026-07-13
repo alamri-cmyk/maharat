@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دورات الباحثين عن عمل | مهارات</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar-shared.css">
+    
+    <style>
+        /* ========================================= */
+        /* 1. الإعدادات العامة وألوان الهوية */
+        /* ========================================= */
+            html {
+            font-size: 14px; 
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        :root {
+            --brand-navy: #002d5b;
+            --brand-blue: #0072bc;
+            --brand-light: #4cb3f8;
+            --white: #ffffff;
+            --text-main: #002d5b;       
+            --text-muted: #1e3a5f;      
+            
+            --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-blue) 100%);
+            --text-gradient: linear-gradient(135deg, #002d5b 0%, #0072bc 50%, #4cb3f8 100%);
+            --bg-modern: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f2ff, #ffffff);
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 114, 188, 0.15);
+            --shadow: 0 12px 35px rgba(0, 45, 91, 0.06);
+            --shadow-hover: 0 20px 45px rgba(0, 114, 188, 0.12);
+        }
+
+        /* ========================================= */
+        /* 2. الخلفية والخطوط المتحركة العصرية */
+        /* ========================================= */
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background: var(--bg-modern);
+            background-size: 400% 400%;
+            animation: animateBG 20s ease infinite; 
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .animated-lines {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            z-index: -2; 
+            pointer-events: none; 
+            display: flex; 
+            justify-content: space-around;
+        }
+
+        .line { 
+            width: 1px; 
+            height: 100%; 
+            background: rgba(0, 114, 188, 0.05); 
+            position: relative; 
+        }
+
+        .line::after {
+            content: ''; 
+            position: absolute; 
+            top: -50%; 
+            left: -1px; 
+            width: 3px; 
+            height: 15vh;
+            background: linear-gradient(to bottom, transparent, var(--brand-light), transparent);
+            animation: movingLine 8s linear infinite;
+        }
+
+        .line:nth-child(2)::after { animation-delay: 2s; animation-duration: 10s; }
+        .line:nth-child(3)::after { animation-delay: 4s; animation-duration: 7s; }
+        .line:nth-child(4)::after { animation-delay: 1s; animation-duration: 9s; }
+        .line:nth-child(5)::after { animation-delay: 3s; animation-duration: 6s; }
+
+        @keyframes movingLine { 
+            0% { top: -50%; opacity: 0; } 
+            50% { opacity: 1; } 
+            100% { top: 110%; opacity: 0; } 
+        }
+
+        @keyframes animateBG { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+
+        @keyframes fadeInUp { 
+            from { opacity: 0; transform: translateY(40px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+
+      /* ========================================= */
+        /* 3. الشريط العلوي (النافبار) */
+        /* ========================================= */
+        .navbar {
+            position: fixed; top: 0; width: 100%; 
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--glass-border); transition: all 0.4s ease;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); padding: 0.6rem 5%; background: rgba(255, 255, 255, 0.98); }
+        
+        /* -- التنسيق المطابق للأكاديمية (محاذاة اليمين) -- */
+        .navbar-inner { 
+            display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 3rem; 
+        }
+        .navbar-menu { 
+            display: flex; align-items: center; flex: 1; justify-content: space-between; 
+        }
+
+        .logo { height: 60px; transition: transform 0.3s; z-index: 1001; }
+        .logo:hover { transform: scale(1.05); }
+        
+        .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--brand-navy); font-weight: 800; font-size: 1rem; position: relative; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; background: var(--brand-gradient); transition: width 0.4s ease; }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* -- إعدادات زر القائمة (مخفي في الشاشات الكبيرة) -- */
+        .menu-toggle { display: none; background: transparent; border: none; font-size: 1.8rem; color: var(--brand-navy); cursor: pointer; transition: color 0.3s ease; }
+        .menu-toggle:hover { color: var(--brand-blue); }
+
+        .nav-auth { display: flex; align-items: center; gap: 1.5rem; }
+
+        /* شارة المستخدم الزجاجية */
+        .user-profile-badge { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+            padding: 0.4rem 1rem 0.4rem 0.8rem; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 50px; 
+            text-decoration: none; 
+            background: rgba(255, 255, 255, 0.5); 
+            transition: all 0.4s ease; 
+        }
+
+        .user-profile-badge:hover { 
+            border-color: var(--brand-light); 
+            background: var(--white); 
+            transform: translateY(-2px); 
+            box-shadow: var(--shadow); 
+        }
+
+        .user-icon { 
+            font-size: 2.2rem; 
+            color: var(--brand-blue); 
+            transition: color 0.3s ease; 
+        }
+
+        .user-profile-badge:hover .user-icon { 
+            color: var(--brand-navy); 
+        }
+
+        .user-info { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            line-height: 1.2; 
+        }
+
+        .user-name { 
+            font-weight: 800; 
+            color: var(--brand-navy); 
+            font-size: 1rem; 
+            transition: color 0.3s ease; 
+        }
+
+        .user-profile-badge:hover .user-name { 
+            color: var(--brand-blue); 
+        }
+
+        .user-role { 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            color: white; 
+            background: var(--brand-gradient); 
+            padding: 0.1rem 0.6rem; 
+            border-radius: 12px; 
+            margin-top: 0.3rem; 
+            display: inline-block; 
+            width: fit-content; 
+        }
+        
+        /* زر تسجيل الخروج */
+        .btn-logout { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 50px; 
+            font-weight: 800; 
+            font-size: 0.95rem; 
+            border: 1px solid rgba(225, 29, 72, 0.3); 
+            cursor: pointer; 
+            font-family: 'Cairo', sans-serif; 
+            transition: all 0.4s ease; 
+            background: rgba(225, 29, 72, 0.05); 
+            color: #e11d48; 
+        }
+
+        .btn-logout:hover { 
+            background: #e11d48; 
+            color: white; 
+            transform: translateY(-2px); 
+            border-color: transparent; 
+            box-shadow: 0 5px 15px rgba(225, 29, 72, 0.2); 
+        }
+
+        /* ========================================= */
+        /* 4. قسم البحث والتصنيفات والدورات */
+        /* ========================================= */
+        .courses { 
+            max-width: 1400px; 
+            margin: 10rem auto 4rem; 
+            padding: 0 5%; 
+            flex: 1; 
+            position: relative; 
+            z-index: 2; 
+        }
+
+        .courses h2 { 
+            text-align: center; 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            margin-bottom: 2rem; 
+            background: var(--text-gradient); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: fadeInUp 0.8s ease; 
+        }
+        
+        .search-container { 
+            max-width: 700px; 
+            margin: 0 auto 2rem auto; 
+            position: relative; 
+            animation: fadeInUp 0.8s ease 0.2s both; 
+        }
+
+        .course-search-input { 
+            width: 100%; 
+            padding: 1.2rem 3.5rem 1.2rem 1.5rem; 
+            font-family: 'Cairo', sans-serif; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            color: var(--brand-navy); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 50px; 
+            outline: none; 
+            transition: all 0.4s ease; 
+            box-shadow: var(--shadow); 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(10px); 
+        }
+
+        .course-search-input:focus { 
+            border-color: var(--brand-blue); 
+            box-shadow: 0 0 0 4px rgba(0, 114, 188, 0.1); 
+            background: var(--white); 
+        }
+
+        .course-search-input::placeholder { 
+            color: #94a3b8; 
+            font-weight: 600; 
+        }
+
+        .search-icon { 
+            position: absolute; 
+            right: 1.5rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--brand-blue); 
+            font-size: 1.3rem; 
+            pointer-events: none; 
+        }
+
+        .category-filters { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 1rem; 
+            margin-bottom: 3rem; 
+            animation: fadeInUp 0.8s ease 0.3s both; 
+        }
+
+        .filter-btn { 
+            padding: 0.7rem 1.8rem; 
+            border-radius: 50px; 
+            background: rgba(255, 255, 255, 0.7); 
+            border: 1px solid var(--glass-border); 
+            font-family: 'Cairo', sans-serif; 
+            font-weight: 800; 
+            font-size: 1rem; 
+            color: var(--brand-navy); 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            box-shadow: var(--shadow); 
+        }
+
+        .filter-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: var(--brand-light); 
+            background: var(--white); 
+        }
+
+        .filter-btn.active { 
+            background: var(--brand-gradient); 
+            color: white; 
+            border-color: transparent; 
+            transform: scale(1.05); 
+            box-shadow: var(--shadow-hover); 
+        }
+
+        .courses-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 2.5rem; 
+            margin-bottom: 2rem; 
+            animation: fadeInUp 0.8s ease 0.4s both; 
+        }
+        
+        .course-card { 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 24px; 
+            padding: 2rem; 
+            text-align: center; 
+            box-shadow: var(--shadow); 
+            border: 1px solid var(--glass-border); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        .course-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: var(--brand-light); 
+        }
+
+        .course-card::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 5px; 
+            background: var(--brand-gradient); 
+        }
+
+        .course-img { 
+            width: 100%; 
+            height: 160px; 
+            object-fit: contain; 
+            border-radius: 12px; 
+            margin-bottom: 1.5rem; 
+            transition: transform 0.4s ease; 
+        }
+
+        .course-card:hover .course-img { 
+            transform: scale(1.05); 
+        }
+
+        .course-card h3 { 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            color: var(--brand-navy); 
+            line-height: 1.5; 
+            margin-bottom: 0.5rem; 
+        }
+
+        .course-category { 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--brand-blue); 
+            background: rgba(0, 114, 188, 0.08); 
+            padding: 0.3rem 0.8rem; 
+            border-radius: 50px; 
+            display: inline-block; 
+            margin-bottom: 1rem;
+        }
+
+        /* ========================================= */
+        /* 5. النافذة المنبثقة (Modal) */
+        /* ========================================= */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow-y: auto; 
+            background-color: rgba(0, 45, 91, 0.6); 
+            backdrop-filter: blur(8px); 
+            animation: fadeIn 0.3s; 
+        }
+
+        .modal-content { 
+            position: relative; 
+            margin: 5% auto; 
+            padding: 0; 
+            max-width: 950px; 
+            width: 95%; 
+            background: rgba(255, 255, 255, 0.98); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            overflow: hidden; 
+        }
+
+        .modal-main-content { 
+            display: flex; 
+            gap: 2.5rem; 
+            padding: 3rem; 
+            align-items: flex-start; 
+        }
+
+        .modal-course-image { 
+            flex-shrink: 0; 
+            width: 220px; 
+            height: 220px; 
+            border-radius: 20px; 
+            object-fit: contain; 
+            border: 1px solid var(--glass-border); 
+            box-shadow: var(--shadow); 
+            padding: 15px; 
+            background: var(--white); 
+        }
+
+        .modal-content-right { 
+            flex: 1; 
+            text-align: right; 
+        }
+        
+        .close { 
+            position: absolute; 
+            top: 20px; 
+            left: 25px; 
+            color: #94a3b8; 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            z-index: 10; 
+            transition: color 0.3s; 
+        }
+
+        .close:hover { 
+            color: #e11d48; 
+        }
+        
+        .modal-title { 
+            font-size: 2rem; 
+            font-weight: 900; 
+            margin-bottom: 1.5rem; 
+            color: var(--brand-navy); 
+            line-height: 1.4; 
+        }
+        
+        .terms { 
+            background: rgba(0, 114, 188, 0.05); 
+            padding: 1rem 1.5rem; 
+            border-radius: 12px; 
+            margin-bottom: 2rem; 
+            font-size: 1rem; 
+            border-right: 4px solid var(--brand-blue); 
+            color: var(--brand-blue); 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+        }
+
+        .terms::before { 
+            content: '\f0a1'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+            font-size: 1.2rem; 
+        }
+        
+        .objective { 
+            background: var(--brand-gradient); 
+            color: white; 
+            padding: 1.8rem; 
+            border-radius: 16px; 
+            margin-bottom: 2rem; 
+            font-size: 1.1rem; 
+            line-height: 1.8; 
+            box-shadow: var(--shadow); 
+        }
+
+        .objective h3 { 
+            margin-bottom: 0.8rem; 
+            font-size: 1.3rem; 
+            font-weight: 900; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+
+        .objective h3::before { 
+            content: '\f140'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+        }
+        
+        .axes { 
+            list-style: none; 
+            padding: 0; 
+            margin-bottom: 2rem; 
+        }
+
+        .axes li { 
+            padding: 0.8rem 0; 
+            padding-right: 2rem; 
+            position: relative; 
+            border-bottom: 1px solid rgba(0,0,0,0.04); 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            font-size: 1.05rem; 
+        }
+
+        .axes li:last-child { 
+            border-bottom: none; 
+        }
+
+        .axes li::before { 
+            content: '\f00c'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+            color: var(--brand-blue); 
+            position: absolute; 
+            right: 0; 
+            top: 0.9rem; 
+            font-size: 1rem; 
+        }
+        
+        /* أزرار النافذة المنبثقة مع نظام التقدم الخاص بالتسجيل */
+       .modal-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; /* التعديل هنا: استخدام center لتوسيط الأزرار في المنتصف */
+            margin-top: 1rem; 
+        }
+        
+        .btn-register { 
+            position: relative; 
+            overflow: hidden; 
+            background: var(--brand-gradient); 
+            color: white; 
+            padding: 1rem 3rem; 
+            border-radius: 50px; 
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-family: 'Cairo', sans-serif; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            border: none; 
+            box-shadow: var(--shadow); 
+        }
+
+        .btn-register:hover:not(.disabled):not(.registered) { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-hover); 
+        }
+
+        .btn-register .progress-bar { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            height: 5px; 
+            background: rgba(255, 255, 255, 0.8); 
+            width: 0; 
+            border-radius: 0 0 50px 50px; 
+        }
+
+        .btn-register.loading { 
+            cursor: not-allowed; 
+            opacity: 0.9; 
+        }
+
+        .btn-register.registered { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            cursor: default; 
+        }
+
+        .btn-register.registered:hover { 
+            transform: none; 
+            box-shadow: var(--shadow); 
+        }
+
+        .btn-close { 
+            background: var(--white); 
+            color: var(--brand-navy); 
+            border: 2px solid var(--glass-border); 
+            padding: 1rem 2.5rem; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            transition: all 0.3s; 
+            font-family: 'Cairo', sans-serif; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+
+        .btn-close:hover { 
+            background: rgba(225, 29, 72, 0.05); 
+            color: #e11d48; 
+            border-color: rgba(225, 29, 72, 0.3); 
+        }
+
+        .success-message { 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem; 
+            color: #059669; 
+            background: #ecfdf5; 
+            padding: 1rem 2rem; 
+            border-radius: 50px; 
+            font-weight: 800; 
+            margin-top: 1.5rem; 
+            font-size: 1rem; 
+            animation: fadeInUp 0.5s ease forwards; 
+            border: 1px solid #10b981; 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15); 
+            max-width: fit-content; 
+            
+            /* التعديل هنا: إضافة الهوامش التلقائية يميناً ويساراً لضمان توسيط الرسالة أسفل الأزرار */
+            margin-right: auto; 
+            margin-left: auto; 
+        }
+
+        /* ========================================= */
+        /* 6. الفوتر المضيء والمتناسق */
+        /* ========================================= */
+        .footer { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-top: 1px solid var(--glass-border); 
+            padding: 5rem 5% 2rem; 
+            position: relative; 
+            z-index: 10; 
+            margin-top: auto; 
+        }
+
+        .footer-img { 
+            height: 65px; 
+            margin-bottom: 1.5rem; 
+        }
+
+        .footer-content { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 4rem; 
+        }
+
+        .footer-section h3 { 
+            margin-bottom: 1.5rem; 
+            font-size: 1.4rem; 
+            font-weight: 900; 
+            color: var(--brand-navy); 
+            border-right: 4px solid var(--brand-blue); 
+            padding-right: 15px; 
+        }
+
+        .footer-section p { 
+            color: var(--text-muted); 
+            line-height: 1.8; 
+            font-weight: 700; 
+        }
+
+        .footer-section a:not(.contact-link) { 
+            color: var(--brand-navy); 
+            text-decoration: none; 
+            display: block; 
+            margin-bottom: 0.8rem; 
+            font-weight: 800; 
+            transition: all 0.3s ease; 
+        }
+
+        .footer-section a:not(.contact-link):hover { 
+            color: var(--brand-blue); 
+            transform: translateX(-8px); 
+        }
+
+        .contact-info { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1rem; 
+        }
+
+        .contact-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            background: rgba(0, 45, 91, 0.04); 
+            padding: 0.8rem 1.2rem; 
+            border-radius: 12px; 
+            border: 1px solid rgba(0, 45, 91, 0.08); 
+            transition: all 0.4s ease; 
+        }
+
+        .contact-item:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--brand-light); 
+            box-shadow: var(--shadow); 
+            background: var(--white); 
+            color: var(--brand-navy); 
+        }
+
+        .contact-icon { 
+            color: var(--brand-blue); 
+            font-size: 1.3rem; 
+        }
+
+        .footer-bottom { 
+            text-align: center; 
+            padding-top: 2rem; 
+            margin-top: 4rem; 
+            border-top: 1px solid rgba(0, 0, 0, 0.08); 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            font-weight: 800; 
+        }
+
+        /* ========================================= */
+        /* التجاوب مع الجوال (Media Queries) */
+        /* ========================================= */
+        @media (max-width: 1024px) {
+            .nav-links { gap: 1rem; }
+            .courses-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-main-content { flex-direction: column; align-items: center; text-align: center; }
+            .modal-content-right { text-align: center; width: 100%; }
+            .terms { flex-direction: column; text-align: center; border-right: none; border-bottom: 4px solid var(--brand-blue); }
+            .axes li { padding-right: 0; }
+            .axes li::before { display: none; }
+            .modal-buttons { justify-content: center; }
+            .success-message { margin-right: auto; margin-left: auto; }
+        }
+
+        @media (max-width: 768px) {
+            .courses { padding-top: 8rem; }
+            .courses h2 { font-size: 2.2rem; }
+            .courses-grid { grid-template-columns: 1fr; } 
+            
+            .modal-content { margin: 15% auto; }
+            .modal-main-content { padding: 2rem 1.5rem; }
+            .modal-course-image { width: 150px; height: 150px; }
+            .modal-title { font-size: 1.6rem; }
+            .modal-buttons { flex-direction: column; width: 100%; }
+            .modal-buttons button, .modal-buttons a { width: 100%; justify-content: center; }
+            
+            .footer-content { grid-template-columns: 1fr; text-align: right; gap: 2rem; }
+
+            /* --- إظهار زر القائمة (الهامبرغر) --- */
+            .menu-toggle { display: block; }
+            
+            /* --- إخفاء القائمة الأصلية وتحويلها لقائمة منسدلة --- */
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                padding: 1.5rem;
+                box-shadow: var(--shadow);
+                border-top: 1px solid var(--glass-border);
+            }
+            
+            /* --- إظهار القائمة عند الضغط --- */
+            .navbar-menu.active { display: flex; }
+            
+            /* --- توسيط الروابط --- */
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 1.5rem;
+                text-align: center;
+            }
+            
+            /* --- ترتيب قسم المستخدم وأزرار الدخول --- */
+            .nav-auth {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 1.5rem;
+            }
+        }
+
+        
+
+    </style>
+</head>
+
+<body>
+
+    <div class="animated-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <img src="logo_maher.png" class="logo" alt="مهارات Logo">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="home_1.html">الرئيسية</a></li>
+                    <li><a href="Researcher.html">الدورات التدريبية</a></li>
+                    <li><a href="word_1.html">كلمة رئيس المشروع</a></li>
+                    <li><a href="gallery_1.html">معرض الصور</a></li>
+                    <li><a href="academy_1.html">عن المعهد</a></li>
+                </ul>
+                <div class="nav-auth" id="navAuth">
+                    <a href="profile1.html" class="user-profile-badge">
+                        <i class="fas fa-user-circle user-icon"></i>
+                        <div class="user-info">
+                            <span id="profileNameLink" class="user-name">أحمد محمد</span>
+                            <span class="user-role">باحث عن عمل</span>
+                        </div>
+                    </a>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="courses">
+        
+        <h2>جميع الدورات المتاحة</h2>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="courseSearch" class="course-search-input" placeholder="ابحث عن اسم الدورة أو التخصص...">
+        </div>
+
+        <div class="category-filters">
+            <button class="filter-btn active" data-category="all">الكل</button>
+            <button class="filter-btn" data-category="إدارية">إدارية</button>
+            <button class="filter-btn" data-category="تقنية">تقنية</button>
+            <button class="filter-btn" data-category="تعليمية">تعليمية</button>
+            <button class="filter-btn" data-category="عامة">عامة</button>
+        </div>
+
+        <div class="courses-grid" id="coursesGrid"></div>
+    </section>
+
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-main-content">
+                <img id="modalImg" class="modal-course-image" src="" alt="">
+                <div class="modal-content-right">
+                    <h2 id="modalTitle" class="modal-title"></h2>
+                    <div id="modalTerms" class="terms"></div>
+                    <div id="modalObjective" class="objective"></div>
+                    <h3 id="modalAxesHeading" class="axes-heading" hidden>الأهداف التفصيلية</h3>
+                    <ul id="modalAxes" class="axes"></ul>
+                    
+                    <div class="modal-buttons">
+                        <button id="modalRegister" class="btn-register">
+                            <span class="progress-bar" id="registerProgress"></span>
+                            <i class="fas fa-user-plus" id="registerIcon"></i> 
+                            <span id="registerText">سجل اهتمامك</span>
+                        </button>
+                        
+                        <button class="btn-close" id="btnCloseModal">
+                            <i class="fas fa-times"></i> إغلاق
+                        </button>
+                    </div>
+
+                    <div id="registrationMessage" class="success-message">
+                        <i class="fas fa-check-circle"></i> تم تسجيل اهتمامك في الدورة سيتم التواصل معك خلال 48 ساعة
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img class="footer-img" src="logo_maher.png" alt="">
+                 <p>برنامج مهارات للتدريب منصة تدريبية متخصصة تقدم دورات عملية للباحثين عن عمل والموظفين، بهدف تطوير المهارات المهنية ورفع فرص النجاح في سوق العمل.</p>
+           </div>
+             <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                    <a href="home_1.html">الرئيسية</a>
+                    <a href="word_1.html">كلمة رئيس المشروع</a>
+                    <a href="Researcher.html">الدورات التدريبية</a>
+                    <a href="gallery_1.html">معرض الصور</a>
+                    <a href="academy_1.html">عن المعهد</a>
+            </div>
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div>هاتف: 0539600080</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>skillsproject23@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; برنامج مهارات للتدريب 2026. جميع الحقوق محفوظة.
+        </div>
+    
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="coursesCatalog.js"></script>
+    <script>
+          // دورات الباحثين عن عمل
+        const jobSeekerCoursesData = [
+            {
+                                            // 1
+                title: ' البرنامج المتكامل في إدخال البيانات',
+                category: 'تقنية',
+                img: 'img-maher/5.png',
+                terms: ' شهادة معتمدة | مدة الدورة شهرين | 5 ساعات في اليوم | بمعدل 220 ساعة تدريبية',
+                objective: ' يهـدف هـذا البـرنامج إلى اكتسـاب المتدرب المعرفـة والمهارات الأساسية في مجـال إدخال البيانـات حيث يتعلم فيها المتدرب أساسيات الحاسب الآلـي والتعرف على مكونات الحاسب الآلي ووحدات قياس البيانات ، وكيفية التعامل مع برنامج معالجة النصوص ( وورد) من حيث كتابة الخطابات والرسائل وتنسيقها وإنشاء الجداول واستخدام دمج المراسلات البريدية، ، وإتقـان سـرعة الطبـاعة من خلال الطباعة بطريقة اللمس ، وإدخال البيانات في برنامج إكسل. ',
+                axes: [
+                    'تعريف الحاسب الآلي.',
+                    'التعرف على مكونات جهاز الحاسب الالي.',
+                    'التعرف على أنواع الحاسب الآلي.',
+                    'التعرف على نظام تشغيل ويندوز.',
+                    'التعرف على الجلسة الصحيحة للكتابة.',
+                    'التعرف على فكرة الكتابة بطريقة اللمس.',
+                    'العمل على كل صف على حدة.',
+                    'التعرف على مكونات لوحة المفاتيح.',
+                    'التدريب على برنامج مدرب الطباعة.',
+                    'ان يتمكن الطالب من ادخال البيانات بشكل سريع ودقيق.',
+                    'أن يتعرَّف المتدرب على فوائد توظيف تطبيقات الأوفيس في العملية الإدارية.',
+                    'أن يتعرف المتدرب على الواجهات الرئيسة لتطبيق مايكروسوفت وورد.',
+                    'تطبيق تنسيقات النصوص والبيانات المختلفة.',
+                    'أن يكتسب المتدرب مهارات استخدام تطبيق مايكروسوفت وورد من خلال الأمثلة والتدريبات.',
+                    'التعرف على أخلاقيات مهنة مدخل البيانات.',
+                    'التعرف على أحكام نظام العمل السعودي.',       
+                    
+                
+                ]
+            },
+            {
+
+                                           // 2
+               title: ' البرنامج المتكامل للمساعد الإداري المحترف',
+                category: 'إداري',
+                img: 'img-maher/Q2.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة شهرين | 5 ساعات في اليوم | بمعدل 220 ساعة تدريبية',
+                objective: 'يهدف البرنامج إلى إعداد مساعد إداري محترف يمتلك المعارف والمهارات والسلوكيات المهنية اللازمة لأداء مهامه بكفاءة عالية، والإسهام الفعّال في دعم القيادات الإدارية، وتحسين جودة العمل الإداري، ومواكبة متطلبات العمل في العصر الحديث والتحول الرقمي.',
+                axes: [
+                    'تحديد واجبات كلٍ من صاحب العمل والعاملين.',
+                    'شرح مفهوم مهنة المساعد الإداري وأخلاقياتها.',
+                    'توضيح مهام المساعد الإداري ومهاراته.',
+                    'استعراض التقنيات الحديثة للمساعد الإداري في العصر الرقمي.',
+                    'التعرف على تحديات الاتصال.',
+                    'بيان مقومات الاتصال الفعال.',
+                    'شرح مفهوم الإدارة المكتبية ووظائفها.',
+                    'شرح مفهوم قاعدة البيانات وأهميتها.',
+                    'تصميم قاعدة بيانات للمكاتب.',
+                    'توضيح مزايا نظام العمل المكتبي المتكامل.',
+                    'توضيح أهمية إعداد التقرير وكيفية إعداده إلكترونياً.',
+                    'تطبيق إستراتيجيات إدارة الوقت.',
+                    'تنظيم الوقت باستخدام التقويم الإلكتروني.',
+                    'توضيح مفهوم إدارة الاجتماعات.',
+                    ' عرض مهارات إدارة الاجتماعات.',
+                    'معرفة أخلاقيات مهنة خدمة العملاء.',
+                    'معرفة على أحكام نظام العمل السعودي.',    
+                
+                ]
+            },
+            {
+                                         // 3
+                    title: 'البرنامج المتكامل في أساسيات الترجمة',
+                category: 'عامة',
+                img: 'img-maher/Q5.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة شهرين | 5 ساعات في اليوم | بمعدل 220 ساعة تدريبية',
+                objective: ' إكساب المتدربين المهارات والمعارف اللازمة لأساسيات الترجمة.',
+                axes: [
+                    'التعرف على أهمية الترجمة وأنواعها المختلفة.',
+                    'التعرف على المترجم، ومؤهلاته.',
+
+                    'التعرف على مهارات المترجم.',
+                    'تحليل أنواع المترجمين في العصر الحالي.',
+
+                    'تحليل أنماط الترجمة ومستوياتها.',
+                    'شرح خطوات الترجمة.',
+
+                    'تطبيق القواعد الأساسية للترجمة.',
+                    'التعرف على التحديات التي تواجه المترجم. ',
+
+                    'التعرف على استخدام البرامج الإلكترونية في الترجمة.',
+                    'تحليل الأخطاء الشائعة في الترجمة إلى اللغة الإنجليزية.',
+
+                    'تحليل الأخطاء الشائعة في الترجمة إلى اللغة العربية.',
+                    'التعرف على ترجمة الأسماء.',
+
+                    'التعرف على بعض الاختلافات بين الإنجليزية البريطانية والإنجليزية الأمريكية. ',
+                    'بناء وتكوين الجملة وأنواعها في اللغة الإنجليزية.', 
+
+                    'التعرف على صعوبات تكوين الجملة العربية والجملة الإنجليزية.',
+                    'استخدام وسائل التحويل الضرورية لنجاح الترجمة.',
+
+                    'التعرف على الترجمة الطبية والتطبيق عليها.',
+                    'التعرف على الترجمة القانونية والتطبيق عليها.',
+
+                    'التعرف على الترجمة التجارية والتطبيق عليها.',
+                    'التعرف على الترجمة الهندسية والتطبيق عليها.',
+
+                    'تطبيق أخلاقيات مهنة المترجم.',
+                    'معرفة أحكام نظام العمل السعودي.',
+                
+                ]
+            },
+            {
+                                         // 4
+                    title: 'البرنامج المتكامل في المبيعات',
+                category: 'عامة',
+                img: 'img-maher/47.png',
+                terms: ' شهادة معتمدة | مدة الدورة شهرين | 5 ساعات في اليوم | بمعدل 220 ساعة تدريبية',
+                objective: 'يهـدف هـذا البـرنامج إلى اكتسـاب المتدرب المعرفـة والمهارات الأساسية في مجـال  المبيعات.',
+                axes: [
+                    'أن يتعرف المتدرب على وصف وظيفة مندوب مبيعات.',
+                    'أن يشرح المتدرب طبيعة عمل مندوب المبيعات.',
+
+                    'أن يعدد المتدرب مهارات العمل في مجال المبيعات.',
+                    'أن يستنبط المتدرب أهم مهارات المبيعات.',
+
+                    'أن يعدد المتدرب طرق البيع والتسويق.',
+                    'أن يميز المتدرب بين المبيعات والتسويق.',
+
+                    'أن يشرح المتدرب تطوير مهارات مندوب المبيعات.',
+                    'أن يذكر المتدرب مهام لمندوب المبيعات للنجاح في مهنة البيع.',
+
+                    'أن يطبق المتدرب مهارات التعامل مع العملاء.',
+                    'أن يطبق المتدرب خطوات بناء استراتيجية المبيعات الناجحة.',
+
+                    'أن يوضح المتدرب علاقة التخطيط الاستراتيجي بإدارة المبيعات.',
+                    'أن يتعرف المتدرب على مفهوم إدارة المبيعات.',
+
+                    'أن يعدد المتدرب أهداف إدارة المبيعات.',
+                    'أن يناقش المتدرب المهارات المطلوبة لمدير المبيعات.',
+                    
+                   ' أن يستنتج المتدرب مهام مدير المبيعات.',
+                   'أن يناقش المتدرب كيفية عمل خطة مبيعات.',
+                
+                   'أن يميز المتدرب بين مهام المدير التنفيذي والمدير التسويقي.',
+                   'أن يتعرف المتدرب على الأخطاء الشائعة التي يرتكبها مديري المبيعات.',
+
+                   'أن يطبق المتدرب أسلوب وفن الاقناع في البيع.',
+                   'أن يتعرف المتدرب على أخلاقيات مهنة مدخل البيانات.',
+                    'أن يتعرف المتدرب على أحكام نظام العمل السعودي.',
+
+                ]
+            },
+            {
+
+                                         // 5
+                title: 'البرنامج المتكامل في خدمة العملاء',
+                category: 'عامة',
+                img: 'img-maher/Q5.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'اكساب المتدربين مفهوم وأهمية خدمة العملاء في الأعمال التجارية، وتعلم استراتيجيات وجوانب متنوعة لخدمة العملاء، وتحقيق التميز وتحقيق رضا العملاء.',
+                axes: [
+                    'التعرف على مفهوم خدمة العملاء وأهميتها في الأعمال التجارية.',
+                    'إدراك أهمية خدمة العملاء وتأثيرها على نجاح الأعمال.',
+
+                    'تعلم استراتيجيات وجوانب متنوعة لخدمة العملاء وكيفية تطبيقها.',
+                    'إدراك أهمية التميز في خدمة العملاء ويكتسب المعرفة اللازمة لتحقيقه.',
+
+                    'التعرف على أهمية رضا العملاء ويتعلم كيفية تحقيقه.',
+                    'استنباط بعض النصائح لتحقيق رضا العملاء.',
+
+                    'تعلم كيفية تحليل أنماط العملاء المختلفة واكتساب المهارات اللازمة للتعامل الفعال مع كل نمط.',
+                    'تعلم أساليب الاتصال المختلفة والتعرف على التحديات التي يمكن أن تواجهه في عملية التواصل.',
+
+                    'اكتساب فهمًا عميقًا للإنصات الجيد وتطوير مهاراته في تحسين عملية الاتصال.',
+                    'فهم أسس التميز والمبادئ الأساسية التي تؤدي إلى جذب العملاء بنجاح.',
+
+                    'أن يتعرف المتدرب على أخلاقيات مهنة خدمة العملاء.',
+                ]
+            },
+            {
+                                        // 6
+                title: 'البرنامج المتكامل في تحليل البيانات',
+                category: 'تقنية',
+                img: 'img-maher/3.jpg',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'تهدف الدورة إلى اكساب المتدربين تحليل البيانات وتطبيقاتها في مجالات متعددة.',
+                axes: [
+                    'اتباع خطوات التحليل.',
+                    'إدراك أهمية التحليل.',
+
+                    'التمييز بين أنواع تحليل البيانات.',
+                    'مقارنة أدوات تحليل البيانات الإحصائية.',
+
+                    'تطبيق مهارات تحليل البيانات باستخدام الإكسل.',
+                    'تطبيق مهارات تحليل البيانات باستخدام برنامج SPSS.',
+
+                    'تطبيق مهارات تحليل البيانات باستخدام باور بي آي.',
+                    'اكتساب مهارات تحليل الشبكات.',
+
+                    'ممارسة مهارات التعامل مع البيانات الضخمة. ',
+                    'ممارسة مهارات التعامل مع أدوات تحليل البيانات الضخمة.',
+
+                    'تحليل البيانات باستخدام الذكاء الاصطناعي.',
+                ]
+            },
+            {
+                                        // 7
+                title: 'البرنامج المتكامل للسكرتير التنفيذي',
+                category: 'عامة',
+                img: 'img-maher/7.png',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'الهدف العام للدورة السابعة الخاصة بالباحثين عن عمل.',
+                axes: [
+                'توضيح مفهوم مهنة السكرتير التنفيذي وأهميته.', 
+                'عرض المهام الرئيسة للسكرتير التنفيذي.',
+
+                'استعراض التقنيات الحديثة الداعمة لعمل السكرتير التنفيذي في ظل التحول الرقمي، وبيان أثرها في تطوير الأداء المؤسسي.', 
+                'التعرف على أبرز التحديات التي تواجه عملية الاتصال في بيئة العمل المعاصرة.',
+
+                'بيان المقومات الأساسية للاتصال الفعّال ودوره في تعزيز كفاءة الأداء المؤسسي.', 
+                'التعرف على أساليب جذب الانتباه في بيئة العمل.',
+
+                'التعرف على العادات السيئة في الحديث مع العميل.', 
+                'التعرف على لغة الجسد في الاتصال بالعميل.',
+
+                'شرح التأثير الإيجابي والسلبي للغة الجسد.', 
+                'توضيح أهمية إعداد التقارير الإدارية، وشرح آليات إعدادها إلكترونيًا وفق معايير مهنية دقيقة.',
+
+                'شرح مفهوم قواعد البيانات وأهميتها في تنظيم المعلومات ودعم اتخاذ القرار.', 
+                'تصميم نموذج لقاعدة بيانات خاصة بالمكاتب الإدارية بما يسهم في تحسين إدارة المعلومات.',
+
+                'توضيح مزايا نظام العمل المكتبي المتكامل ودوره في رفع مستوى الكفاءة التشغيلية.', 
+                'شرح مفهوم الإدارة المكتبية وبيان وظائفها الأساسية في دعم الهيكل التنظيمي.',
+
+                'تطبيق إستراتيجيات إدارة الوقت بما يحقق الاستخدام الأمثل للموارد الزمنية.', 
+                'تنظيم الوقت من خلال توظيف التقويم الإلكتروني بوصفه أداة حديثة لإدارة المهام والمواعيد.',
+
+                'توضيح مفهوم إدارة الاجتماعات وأهميتها.', 
+                'عرض المهارات اللازمة لإدارة الاجتماعات بفاعلية؛ بما يسهم في تحقيق أهدافها بكفاءة.',
+
+                'التعرف على الذكاء العاطفي وعلاقته بإدارة العمل.', 
+                'التعرف على أخلاقيات العمل.',
+
+                'التعرف على أحكام نظام العمل.', 
+            ]
+            },
+            {
+                                        // 8
+                title: 'البرنامج المهني في الأعمال المكتبية المتقدمة',
+                category: 'إدارية',
+                img: 'img-maher/8.png',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'الهدف العام للدورة الثامنة الخاصة بالباحثين عن عمل.',
+                axes: [
+                'مفهوم الإدارة التقليدية والإدارية.', 
+                'مفهوم المكتب، والمكتب الإلكتروني.',
+
+                'فهم خطوات إدخال الإدارة الإلكترونية.',
+                'شرح خطوات تنفيذ الإدارة الإلكترونية.',
+
+                'التعرف على متطلبات إنجاح الإدارة الإلكترونية.',
+                'تطبيق أساسيات التحول للإدارة الإلكترونية.',
+
+                'الاستفادة من نظام العمل المكتبي المتكامل.',
+                'التعرف على مزايا نظام العمل المكتبي المتكامل.',
+
+                'اكتساب المفاهيم الأساسية حول الحاسب واستخداماته في الحياة اليومية.',
+                'اكتساب رؤية واضحة حول الحزم البرمجية "مايكروسوفت أوفيس"، ومزاياها؛ بوصفها أدوات إنتاجية تستخدم في العمل الإداري. ',
+
+                'اكتساب المهارات الخاصة ببرنامج Microsoft Word.',
+                'تطبيق المهارات الخاصة ببرنامج Microsoft Word، والارتقاء بالإنتاجية في العمل الإداري.',
+
+                'اكتساب المهارات الخاصة ببرنامج Microsoft Excel.',
+                'تطبيق المهارات الخاصة بالبرنامج Microsoft Excel، والارتقاء بالإنتاجية في العمل الإداري. ',
+
+                'اكتساب المهارات العلمية والعملية الخاصة ببرنامج Microsoft Access.',
+                'تطبيق المهارات الخاصة ببرنامج Microsoft Access.',
+
+                'اكتساب المهارات الخاصة ببرنامج العروض التقديمية Microsoft PowerPoint.',
+                'تطبيق المهارات الخاصة ببرنامج العروض التقديمية Microsoft PowerPoint.',
+
+                'اكتساب المهارات الخاصة ببرنامج البريد الإلكتروني Microsoft Outlook..',
+                'تطبيق المهارات الخاصة ببرنامج البريد الإلكتروني Microsoft Outlook.والاستفادة منها في العمل الإداري.',
+
+                'اكتساب مهارات العمل كفريق عمل، وتبادل المعرفة والخبرات، والإسهام الفعال في تحقيق أهداف البرنامج التدريبي. ',
+                'التعرف على أخلاقيات العمل.',
+
+                'التعرف على أحكام نظام العمل.',
+            ]
+            },
+            {
+                                    // 9
+                title: 'البرنامج المتكامل في إدارة الموارد البشرية',
+                category: 'إدارية',
+                img: 'img-maher/Q9.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'الهدف العام للدورة التاسعة الخاصة بالباحثين عن عمل.',
+                axes: [
+                'إعداد كوادر قادرة على قيادة مؤسسات الأعمال.', 
+                'شرح دور الموارد البشرية ووظيفتها في تحقيق الأهداف الإستراتيجية.',
+
+                'شرح المفاهيم الأساسية في التخطيط الإستراتيجي لإدارة الموارد البشرية.', 
+                'تحليل المكونات الأساسية في إدارة الموارد البشرية.',
+
+                'تطبيق الوظائف الأساسية لإدارة الموارد البشرية: للتعاقب الوظيفي، والوصف الوظيفي، والتوظيف، والاستقطاب. ', 
+                'تدريب الكوادر البشرية وتطويرها في مؤسسات الأعمال.',
+
+                'المنافع والأجور والمكافآت نحو زيادة الإنتاجية.', 
+                'التعرف على إدارة رأس المال البشري.',
+
+                'فهم أسباب الاهتمام بإدارة رأس المال البشري.', 
+                'تعريف إدارة الجودة الشاملة.',
+
+                'تطبيق مبادئ إدارة الجودة الشاملة.', 
+                'تنمية رأس المال البشري في إطار الجودة الشاملة.',
+
+                'التعرف على أخلاقيات العمل.', 
+                'التعرف على أحكام نظام العمل.',
+
+
+
+
+            ]
+            },
+            {
+                                    // 10
+                title: 'البرنامج المتكامل في التسويق',
+                category: 'عامة',
+                img: 'img-maher/Q10.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'الهدف العام للدورة العاشرة الخاصة بالباحثين عن عمل.',
+                axes: [
+                'التعرف على التسويق بين المفهوم التقليدي والمفهوم الحديث.', 
+                'توضيح المزايا التي يقدمها التسويق للمجتمع.',
+
+                'توضيح مفهوم بحوث التسويق وأهميتها.', 
+                'التعرف على أنواع البحوث التسويقية.',
+
+                'استعراض مراحل البحث التسويقي.', 
+                'تحليل تحديات بحوث التسويق.',
+
+                'تطبيق إستراتيجيات التعامل مع الأسواق المتاحة.', 
+                'تحديد متى يكون تقسيم السوق فعالًا.',
+
+                'استعراض إستراتيجيات الأسواق المستهدفة المناسبة.', 
+                'التعرف على خصائص سلوك المستهلك ومميزاته.',
+
+                'تفسير سلوك المستهلك.', 
+                'شرح خطوات اتخاذ قرار الشراء.',
+
+                'التعرف على تحديات الاتصال.', 
+                'بيان مقومات الاتصال الفعال.',
+
+                'التعرف على أساليب جذب الانتباه في بيئة العمل.', 
+                'التعرف على العادات السيئة في الحديث مع العميل.',
+
+                'التعرف على لغة الجسد في الاتصال بالعميل.', 
+                'شرح التأثير الإيجابي والسلبي للغة الجسد.',
+
+                'التعرف على أخلاقيات العمل.', 
+                'التعرف على أحكام نظام العمل.',
+            ]
+            },
+            {
+                                        // 11
+                title: 'البرنامج المتكامل في إعداد المعلمين والمعلمات',
+                category: 'تعليمية',
+                img: 'img-maher/Q11.jpeg',
+                terms: ' شهادة معتمدة | مدة الدورة 5 ايام | بمعدل 40 ساعة تدريبية',
+                objective: 'الهدف العام للدورة الحادية عشرة الخاصة بالباحثين عن عمل.',
+                axes: [
+                'التعرف على مفهوم إعداد المعلمين.', 
+                'تحديد خصائص إعداد المعلمين.',
+
+                'تتبع التطور التاريخي لبرامج إعداد المعلم في المملكة العربية السعودية.', 
+                'تطبيق الاتجاهات الحديثة في إعداد المعلم.',
+
+                'توضيح برامج إعداد المعلمين في المملكة العربية السعودية.', 
+                'تطبيق إستراتيجيات التدريس.',
+
+                'شرح كيفية دمج التقنية في البيئة التعليمية.', 
+                'انتاج المحتوى الإلكتروني التفاعلي باستخدام برنامج pdf filp.',
+
+                'إنتاج المحتوى التعليمي الإلكتروني التفاعلي باستخدام.(Articulate Storyline)', 
+                'شرح التعليم عن بعد في ظل الأزمات.',
+
+                'تطبيق تقويم نتائج التعلم.', 
+                'تطبيق الذكاء الاصطناعي في التعليم.',
+
+                'تطبيق برنامج storyline في عملية التعليم.', 
+                'التعرف على أخلاقيات نظام العمل.',
+
+                'شرح ميثاق أخلاقيات مهنة التدريس.', 
+                'التعرف على متطلبات الرخصة المهنية للمعلمين.',
+
+            ]
+            }
+        ];
+
+        let filteredCourses = [...coursesData]; 
+        let currentCategory = 'all';
+        let currentSearchTerm = '';
+        
+        let registeredCourses = new Set();
+        let registrationTimeout;
+        let messageTimeout;
+
+        const modal = document.getElementById('courseModal');
+        const coursesGrid = document.getElementById('coursesGrid');
+        const btnClose = document.getElementById('btnCloseModal');
+        
+        const btnRegister = document.getElementById('modalRegister');
+        const registerIcon = document.getElementById('registerIcon');
+        const registerText = document.getElementById('registerText');
+        const registerProgress = document.getElementById('registerProgress');
+        const registrationMessage = document.getElementById('registrationMessage');
+
+        function createCourseCards() {
+            if(!coursesGrid) return;
+            coursesGrid.innerHTML = ''; 
+            
+            if (filteredCourses.length === 0) {
+                coursesGrid.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; font-size: 1.2rem; color: var(--text-muted); font-weight: 700; padding: 3rem;">عذراً، لم نتمكن من العثور على دورة تطابق بحثك.</p>';
+                return;
+            }
+
+            for(let i = 0; i < filteredCourses.length; i++) {
+                const course = filteredCourses[i];
+                const originalIndex = coursesData.indexOf(course);
+
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div class="course-category">${course.category}</div>
+                    <img class="course-img" src="${course.img}" alt="${course.title}">
+                    <h3>${course.title}</h3>
+                `;
+                card.onclick = () => openModal(originalIndex);
+                coursesGrid.appendChild(card);
+            }
+        }
+
+        function filterAndRender() {
+            filteredCourses = coursesData.filter(course => {
+                const matchesSearch = course.title.toLowerCase().includes(currentSearchTerm);
+                const matchesCategory = currentCategory === 'all' || course.category === currentCategory;
+                return matchesSearch && matchesCategory;
+            });
+            createCourseCards();
+        }
+
+        function openModal(index) {
+            const course = coursesData[index];
+            document.getElementById('modalImg').src = course.img;
+            document.getElementById('modalTitle').textContent = course.title;
+            document.getElementById('modalTerms').textContent = course.terms;
+            const objective = (course.objective || '').trim();
+            document.getElementById('modalObjective').innerHTML = objective
+                ? `<h3>الهدف العام للدورة</h3><p>${objective}</p>`
+                : '<h3>الهدف العام للدورة</h3><p>—</p>';
+
+            const axesEl = document.getElementById('modalAxes');
+            const axesHeading = document.getElementById('modalAxesHeading');
+            const axes = Array.isArray(course.axes) ? course.axes : [];
+            axesEl.innerHTML = '';
+            if (axesHeading) axesHeading.hidden = axes.length === 0;
+
+            axes.forEach(axis => {
+                const li = document.createElement('li');
+                li.textContent = axis;
+                axesEl.appendChild(li);
+            });
+
+            btnRegister.classList.remove('registered', 'loading');
+            btnRegister.disabled = false;
+            registerProgress.style.transition = 'none'; 
+            registerProgress.style.width = '0';
+            registrationMessage.style.display = 'none'; 
+            
+            clearTimeout(registrationTimeout); 
+            clearTimeout(messageTimeout);
+            
+            if (registeredCourses.has(index)) {
+                btnRegister.classList.add('registered');
+                registerIcon.className = 'fas fa-check-circle';
+                registerText.textContent = 'تم تسجيل اهتمامك في الدورة';
+                btnRegister.disabled = true;
+                registerProgress.style.width = '100%';
+                registrationMessage.style.display = 'flex'; 
+            } else {
+                registerIcon.className = 'fas fa-user-plus';
+                registerText.textContent = 'سجل اهتمامك في الدورة';
+            }
+
+            btnRegister.onclick = function() {
+                if (!registeredCourses.has(index) && !btnRegister.classList.contains('loading')) {
+                    btnRegister.classList.add('loading');
+                    registerIcon.className = 'fas fa-spinner fa-spin'; 
+                    registerText.textContent = 'جاري التسجيل...';
+                    btnRegister.disabled = true;
+                    
+                    setTimeout(() => {
+                        registerProgress.style.transition = 'width 2s linear';
+                        registerProgress.style.width = '100%';
+                    }, 5); 
+
+                    registrationTimeout = setTimeout(() => {
+                        registeredCourses.add(index);
+                        btnRegister.classList.remove('loading');
+                        btnRegister.classList.add('registered');
+                        registerIcon.className = 'fas fa-check-circle';
+                        registerText.textContent = 'تم تسجل اهتمامك في الدورة';
+                        registerProgress.style.transition = 'none'; 
+                        
+                        messageTimeout = setTimeout(() => {
+                            registrationMessage.style.display = 'flex';
+                        }, 500);
+
+                    }, 2000); 
+                }
+            };
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            modal.scrollTop = 0; 
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            registrationMessage.style.display = 'none'; 
+            clearTimeout(messageTimeout); 
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const localCoursesBackup = JSON.parse(JSON.stringify(coursesData));
+            try {
+                if (typeof window.fetchActiveCoursesForCatalog === 'function') {
+                    const remote = await window.fetchActiveCoursesForCatalog();
+                    if (Array.isArray(remote)) {
+                        const merged = typeof window.mergeCatalogWithLocal === 'function'
+                            ? window.mergeCatalogWithLocal(remote, localCoursesBackup)
+                            : remote;
+                        coursesData.length = 0;
+                        coursesData.push(...merged);
+                        filteredCourses = [...coursesData];
+                    }
+                    // كود تشغيل القائمة للهواتف (الهامبرغر)
+            const menuToggleBtn = document.getElementById('menuToggle');
+            const navbarMenuDiv = document.getElementById('navbarMenu');
+            if(menuToggleBtn && navbarMenuDiv) {
+                menuToggleBtn.addEventListener('click', function() {
+                    navbarMenuDiv.classList.toggle('active');
+                });
+            }
+                }
+            } catch (e) {
+                console.warn('تعذر تحميل الدورات من الخادم، تُعرض القائمة المحلية:', e);
+            }
+
+            // جلب اسم المستخدم من local storage وعرضه
+            function updateProfileUI() {
+                const data = JSON.parse(localStorage.getItem('userProfileData') || localStorage.getItem('profileData') || '{}');
+                const profileNameLink = document.getElementById('profileNameLink');
+                
+                if (data.name || data.Name) {
+                    if (profileNameLink) {
+                        profileNameLink.textContent = data.Name || data.name;
+                    }
+                }
+            }
+            updateProfileUI();
+
+            // برمجة زر تسجيل الخروج
+            const logoutBtn = document.getElementById('logoutBtn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('profileData');
+                    localStorage.removeItem('userProfileData');
+                    window.location.href = 'index.html'; 
+                });
+            }
+
+            // التفاعل مع أزرار التصنيف
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    filterAndRender();
+                });
+            });
+
+            // إعداد البحث
+            const searchInput = document.getElementById('courseSearch');
+            if(searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    currentSearchTerm = e.target.value.trim().toLowerCase();
+                    filterAndRender();
+                });
+            }
+
+            // عرض الدورات عند بدء التشغيل
+            createCourseCards();
+
+            // برمجة إغلاق النافذة المنبثقة
+            if(btnClose) btnClose.onclick = closeModal;
+            const closeX = document.querySelector('.close');
+            if(closeX) closeX.onclick = closeModal;
+            
+            window.onclick = (e) => { 
+                if (e.target === modal) {
+                    closeModal();
+                } 
+            };
+
+            // تأثير تظليل الشريط العلوي عند النزول
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if(nav) {
+                    nav.classList.toggle('scrolled', window.scrollY > 50);
+                }
+            });
+        });
+    </script>
+    <script src="navbar-shared.js"></script>
+</body>
+</html>
